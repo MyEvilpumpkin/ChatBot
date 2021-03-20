@@ -1,14 +1,13 @@
+import sqlite3
 import nltk
 from nltk.stem import WordNetLemmatizer
 import pickle
 import numpy as np
 from keras.models import load_model
-import json
 import random
 
 lemmatizer = WordNetLemmatizer()
 loaded_model = load_model('chatbot_model.h5')
-loaded_intents = json.loads(open('intents.json', encoding='utf-8').read())
 loaded_words = pickle.load(open('words.pkl', 'rb'))
 loaded_classes = pickle.load(open('classes.pkl', 'rb'))
 
@@ -52,18 +51,18 @@ def predict_class(sentence, model):
     return return_list
 
 
-def get_response(ints, intents):
-    result = ''
-    tag = ints[0]['intent']
-    list_of_intents = intents['intents']
-    for i in list_of_intents:
-        if i['tag'] == tag:
-            result = random.choice(i['responses'])
-            break
+def get_response(ints):
+    connection = sqlite3.connect("ChatbotDB.db")
+    cursor = connection.cursor()
+    cursor.execute("SELECT responses.response_text "
+                   "FROM responses INNER JOIN tags ON responses.tag_id = tags.tag_id "
+                   "AND tags.tag_name = \"%tag_name\"".replace("%tag_name", ints[0]['intent']))
+    responses = cursor.fetchall()
+    result = random.choice(responses)[0]
     return result
 
 
 def chatbot_response(msg):
     ints = predict_class(msg, loaded_model)
-    result = get_response(ints, loaded_intents)
+    result = get_response(ints)
     return result
