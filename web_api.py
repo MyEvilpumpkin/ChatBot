@@ -19,7 +19,7 @@ def get_bot_response():
 
 @app.route("/getfirstmessage")
 def get_first_bot_message():
-    return 'Привет, я - Атом, бот-помощник!<br>Я помогу тебе освоится в нашей компании'
+    return 'Привет, я - Атом, бот-помощник!<br>Я помогу тебе освоиться в нашей компании'
 
 
 if __name__ == "__main__":
