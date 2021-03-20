@@ -11,10 +11,15 @@ def home():
     return render_template("index.html")
 
 
-@app.route("/get")
+@app.route("/getresponse")
 def get_bot_response():
     user_text = request.args.get('msg')
-    return str(chatbot_response(user_text)).encode('utf-8')
+    return str(chatbot_response(user_text))
+
+
+@app.route("/getfirstmessage")
+def get_first_bot_message():
+    return 'Привет, я - Атом, бот-помощник!<br>Я помогу тебе освоится в нашей компании'
 
 
 if __name__ == "__main__":
