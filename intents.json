@@ -1,27 +1,27 @@
 {"intents": [
         {"tag": "greeting",
-         "patterns": ["Привет", "Как дела?", "Есть кто?","Прив","Даров", "Ку ёпта", "Добый день"],
-         "responses": ["Чё надо?", "Опять ты...", "Помощь ННАДА?"],
+         "patterns": ["Привет", "Как дела?", "Здесь кто-нибудь есть?","Эй","Здравствуйте", "Добый день"],
+         "responses": ["Здравствуй! Спасибо, что спросил!", "Рад видеть тебя", "Привет, как я могу помочь?"],
          "context": [""]
         },
         {"tag": "goodbye",
-         "patterns": ["Bye", "See you later", "Goodbye", "Nice chatting to you, bye", "Till next time"],
-         "responses": ["See you!", "Have a nice day", "Bye! Come back again soon."],
+         "patterns": ["Пока", "Увидимся", "До свидания", "Приятно было пообщаться", "До скорого"],
+         "responses": ["Ещё увидимся!", "Приятного дня", "Пока! Возвращайся поскорее!", "Всего хорошего!", "До скорой встречи!", "Рад был поболтать!"],
          "context": [""]
         },
         {"tag": "thanks",
-         "patterns": ["Thanks", "Thank you", "That's helpful", "Awesome, thanks", "Thanks for helping me"],
-         "responses": ["Happy to help!", "Any time!", "My pleasure"],
+         "patterns": ["Спасибо!", "Спасибо тебе", "Это было полезно", "Здорово, спасибо!", "Спасибо за помощь!", "Благодарю"],
+         "responses": ["Всегда рад помочь!", "Обращайся в любое время!", "Не за что"],
          "context": [""]
         },
         {"tag": "noanswer",
          "patterns": [],
-         "responses": ["Sorry, can't understand you", "Please give me more info", "Not sure I understand"],
+         "responses": ["Извини, я тебя не понял", "Мне нужно больше информации", "Не уверен, что я тебя понял"],
          "context": [""]
         },
         {"tag": "options",
-         "patterns": ["How you could help me?", "What you can do?", "What help you provide?", "How you can be helpful?", "What support is offered"],
-         "responses": ["I can guide you through Adverse drug reaction list, Blood pressure tracking, Hospitals and Pharmacies", "Offering support for Adverse drug reaction, Blood pressure, Hospitals and Pharmacies"],
+         "patterns": ["Как ты можешь мне помочь?", "Что ты умеешь?", "Для чего ты нужен?", "Какую помощь ты можешь предложить?"],
+         "responses": ["Я могу познакомить тебя с нормативными документами и с политикой безопасности, принятой в нашей компании. Ещё я могу рассказать о технологическом процессе компании, а также о её истории и корпоративной культуре. Ах да, про карьерный рост я тоже кое-что знаю:)" ],
          "context": [""]
         },
         {"tag": "adverse_drug",

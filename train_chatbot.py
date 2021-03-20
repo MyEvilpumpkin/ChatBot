@@ -13,7 +13,7 @@ words = []
 classes = []
 documents = []
 ignore_words = ['?', '!']
-intents = json.loads(open('intents.json').read())
+intents = json.loads(open('intents.json', encoding='utf-8').read())
 
 for intent in intents['intents']:
     for pattern in intent['patterns']:
