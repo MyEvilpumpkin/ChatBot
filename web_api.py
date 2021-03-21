@@ -31,8 +31,8 @@ def get_bot_response():
 @app.route("/getfirstmessage")
 def get_first_bot_message():
     response = chatbot_response('Привет')
-    first_response = ('Привет, я - Атом, бот-помощник!<br>Я помогу тебе освоиться в нашей компании<br>'
-                      'Чем я могу помочь?', response[1])
+    first_response = ('Привет, я - Атом, бот-помощник!<br>Я помогу тебе освоиться в нашей компании.<br>'
+                      'Что ты хочешь у меня спросить?', response[1])
     return reformat_response(first_response)
 
 
