@@ -1,10 +1,10 @@
+import sqlite3
 import nltk
 from nltk.stem import WordNetLemmatizer
-import json
 import pickle
 import numpy as np
 from keras.models import Sequential
-from keras.layers import Dense, Activation, Dropout
+from keras.layers import Dense, Dropout
 from keras.optimizers import SGD
 import random
 
@@ -13,18 +13,19 @@ words = []
 classes = []
 documents = []
 ignore_words = ['?', '!']
-intents = json.loads(open('intents.json', encoding='utf-8').read())
 
-for intent in intents['intents']:
-    for pattern in intent['patterns']:
-        # tokenize each word
-        w = nltk.word_tokenize(pattern)
-        words.extend(w)
-        # add documents in the corpus
-        documents.append((w, intent['tag']))
-        # add to our classes list
-        if intent['tag'] not in classes:
-            classes.append(intent['tag'])
+connection = sqlite3.connect("ChatbotDB.db")
+cursor = connection.cursor()
+cursor.execute("SELECT patterns.pattern_text, tags.tag_name "
+               "FROM patterns INNER JOIN tags ON patterns.tag_id = tags.tag_id")
+patterns = cursor.fetchall()
+
+for pattern in patterns:
+    w = nltk.word_tokenize(pattern[0])
+    words.extend(w)
+    documents.append((w, pattern[1]))
+    if pattern[1] not in classes:
+        classes.append(pattern[1])
 
 # lemmatize, lower each word and remove duplicates
 words = [lemmatizer.lemmatize(w.lower()) for w in words if w not in ignore_words]

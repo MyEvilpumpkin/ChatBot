@@ -4,6 +4,8 @@
   --border: 2px solid #ddd;
   --left-msg-bg: #ececec;
   --right-msg-bg: #579ffb;
+  --left-cmd-bg: #cecece;
+  --left-cmd-bg-hover: #909090;
 }
 
 html {
@@ -116,6 +118,23 @@ body {
 }
 .right-msg .msg-img {
   margin: 0 0 0 10px;
+}
+
+.msg-command {
+	text-align: center;
+	margin-top: 5px;
+	padding: 5px;
+    border-radius: 15px;
+	background: var(--left-cmd-bg);
+    cursor: default;
+}
+
+.msg-command:hover {
+	background: var(--left-cmd-bg-hover);
+}
+
+.msg-command:first-child {
+	margin-top: 10px;
 }
 
 .msger-inputarea {
