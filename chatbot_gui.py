@@ -11,7 +11,7 @@ def send():
         ChatLog.insert(END, "You: " + msg + '\n\n')
         ChatLog.config(foreground="#442265", font=("Verdana", 12))
 
-        res = chatbot_response(msg)
+        res = chatbot_response(msg)[0]
         ChatLog.insert(END, "Bot: " + res + '\n\n')
 
         ChatLog.config(state=DISABLED)

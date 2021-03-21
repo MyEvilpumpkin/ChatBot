@@ -65,6 +65,11 @@
       });
     }
 
+    function cmdOnClick(msgText) {
+		appendMessage(PERSON_NAME, PERSON_IMG, "right", msgText, "");
+        botResponse(msgText);
+	}
+
     function get(selector, root = document) {
       return root.querySelector(selector);
     }

@@ -58,7 +58,13 @@ def get_response(ints):
                    "FROM responses INNER JOIN tags ON responses.tag_id = tags.tag_id "
                    "AND tags.tag_name = \"%tag_name\"".replace("%tag_name", ints[0]['intent']))
     responses = cursor.fetchall()
-    result = random.choice(responses)[0]
+
+    cursor.execute("SELECT commands.command_name "
+                   "FROM commands INNER JOIN tags ON commands.tag_id = tags.tag_id "
+                   "AND tags.tag_name = \"%tag_name\"".replace("%tag_name", ints[0]['intent']))
+    commands = cursor.fetchall()
+
+    result = (random.choice(responses)[0], commands)
     return result
 
 
