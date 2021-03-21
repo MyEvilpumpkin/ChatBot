@@ -126,6 +126,7 @@ body {
 	padding: 5px;
     border-radius: 15px;
 	background: var(--left-cmd-bg);
+    cursor: default;
 }
 
 .msg-command:hover {
