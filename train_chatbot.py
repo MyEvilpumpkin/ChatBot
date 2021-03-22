@@ -14,12 +14,14 @@ classes = []
 documents = []
 ignore_words = ['?', '!']
 
+# Коннектим БД
 connection = sqlite3.connect("ChatbotDB.db")
 cursor = connection.cursor()
 cursor.execute("SELECT patterns.pattern_text, tags.tag_name "
                "FROM patterns INNER JOIN tags ON patterns.tag_id = tags.tag_id")
 patterns = cursor.fetchall()
 
+# Токенизация - разбиение текста на слова
 for pattern in patterns:
     w = nltk.word_tokenize(pattern[0])
     words.extend(w)
@@ -27,59 +29,65 @@ for pattern in patterns:
     if pattern[1] not in classes:
         classes.append(pattern[1])
 
-# lemmatize, lower each word and remove duplicates
+# Лемматизация - приведение слов к нормальное форме
+# Для существительных — именительный падеж, единственное число
+# Для прилагательных — именительный падеж, единственное число, мужской род
+# Для глаголов, причастий, деепричастий — глагол в инфинитиве несовершенного вида
 words = [lemmatizer.lemmatize(w.lower()) for w in words if w not in ignore_words]
 words = sorted(list(set(words)))
-# sort classes
+# Сортируем тэги по алфавиту
 classes = sorted(list(set(classes)))
-# documents = combination between patterns and intents
+# document = пара паттерн-тэг
 print(len(documents), "documents")
-# classes = intents
+# classes - это тэги
 print(len(classes), "classes", classes)
-# words = all words, vocabulary
+# words = все уникальные слова из паттернов
 print(len(words), "unique lemmatized words", words)
 pickle.dump(words, open('words.pkl', 'wb'))
 pickle.dump(classes, open('classes.pkl', 'wb'))
 
-# create our training data
+# Создаём тренировочные данные
 training = []
-# create an empty array for our output
+# Пустой массив для вывода
 output_empty = [0] * len(classes)
-# training set, bag of words for each sentence
+# Тренировочные данные, создаём мешок слов для каждого предложения
 for doc in documents:
-    # initialize our bag of words
+    # Инициализируем мешок слов
     bag = []
-    # list of tokenized words for the pattern
+    # Список токенизированных слов для каждого паттерна
     pattern_words = doc[0]
-    # lemmatize each word - create base word, in attempt to represent related words
+    # Лемматизируем каждое слово - приводим к начальной форме, пытаясь определить однокоренные слова
     pattern_words = [lemmatizer.lemmatize(word.lower()) for word in pattern_words]
-    # create our bag of words array with 1, if word match found in current pattern
+    # Создаём мешок слов с единицей в конце списка, если найдено совпадение слова в текущем шаблоне
     for w in words:
         bag.append(1) if w in pattern_words else bag.append(0)
-    # output is a '0' for each tag and '1' for current tag (for each pattern)
+    # В выводе будет 1 для подходящего тэга для каждого паттерна и 0 - для остальных
     output_row = list(output_empty)
     output_row[classes.index(doc[1])] = 1
     training.append([bag, output_row])
-# shuffle our features and turn into np.array
+# Перемешиваем всё и приводим к массиву numpy для удобства обучения сети
 random.shuffle(training)
 training = np.array(training)
-# create train and test lists. X - patterns, Y - intents
+# Создаём тренировочную и тестовую выборки. X - паттерны, Y - тэги
 train_x = list(training[:, 0])
 train_y = list(training[:, 1])
 print("Training data created")
 
-# Create model - 3 layers. First layer 128 neurons, second layer 64 neurons and 3rd output layer contains number of
-# neurons equal to number of intents to predict output intent with softmax
+# Создаём нейронную модель с 3 слоями. Первый слой содержит 128 нейронов, второй - 64 нейрона,
+# 3-й слой содержит количество нейронов, равное количеству тэгов, для предсказания итогового тэга, используя softmax
+# Softmax - это математическая функция, которая преобразует вектор чисел в вектор вероятностей, где вероятности каждого
+# Значения пропорциональны относительному масштабу каждого значения в векторе
 model = Sequential()
 model.add(Dense(128, input_shape=(len(train_x[0]),), activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(64, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(len(train_y[0]), activation='softmax'))
-# Compile model. Stochastic gradient descent with Nesterov accelerated gradient gives good results for this model
+# Компилируем модель
+# Стохастический градиентный спуск с ускоренным градиентом Нестерова даёт хорошие результаты для этой модели.
 sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
 model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
-# fitting and saving the model
+# Тренируем модель и сохраняем её
 hist = model.fit(np.array(train_x), np.array(train_y), epochs=200, batch_size=5, verbose=1)
 model.save('chatbot_model.h5', hist)
 print("model created")
