@@ -44,6 +44,7 @@ body {
 }
 
 .msger-header {
+  display: flex;
   font-size: large;
   justify-content: space-between;
   padding: 10px;
@@ -58,6 +59,11 @@ body {
     font-size: medium;
   	padding: 5px;
   }
+}
+
+.msger-header-title {
+  width: 100%;
+  margin-left: 5px;
 }
 
 .msger-header-title b {
@@ -163,19 +169,19 @@ body {
 }
 
 .msg-command {
-	text-align: center;
-	margin: 5px;
-	padding: 5px;
-    border-radius: 15px;
-	background: var(--left-cmd-bg);
+  text-align: center;
+  margin: 5px;
+  padding: 5px;
+  border-radius: 15px;
+  background: var(--left-cmd-bg);
 }
 
 .msg-command:hover {
-	background: var(--left-cmd-bg-hover);
+  background: var(--left-cmd-bg-hover);
 }
 
 .msg-command:first-child {
-	margin-top: 10px;
+  margin-top: 10px;
 }
 
 .msger-inputarea {
@@ -232,4 +238,61 @@ body {
 .msger-chat {
   background-color: #fcfcfe;
   background-size: auto 100%;
+}
+
+.icons li {
+  background: none repeat scroll 0 0 rgb(50, 110, 180);
+  height: 5px;
+  width: 5px;
+  list-style: none outside none;
+  margin-top: 2px;
+  border-radius:50%;
+  font-size: 1em;
+  cursor: pointer;
+  pointer-events: none;
+  margin-right: 5px;
+}
+
+.icons:hover li {
+  background: none repeat scroll 0 0 rgb(30, 70, 140);
+}
+
+@media all and (max-width: 576px) {
+  .icons li {
+    height: 4px;
+	width: 4px;
+  }
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  margin-top: 10px;
+  margin-left: -160px;
+  width: 160px;
+  background-color: #f9f9f9;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+@media all and (max-width: 576px) {
+  .dropdown-content {
+    margin-left: -140px;
+	width: 140px;
+  }
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 10px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #ececec;
+}
+
+.show {
+  display:block;
 }
