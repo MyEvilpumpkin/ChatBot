@@ -72,6 +72,17 @@
 	  }
 	}
 
+	function imgOnClick(img) {
+	  if (img.classList.contains("popup")){
+		img.classList.remove("popup");
+		img.getElementsByTagName("img")[0].classList.remove("full-img");
+	  }
+	  else {
+		img.classList.add("popup");
+		img.getElementsByTagName("img")[0].classList.add("full-img");
+	  }
+	}
+
 	function clearChat() {
 	  let elms = document.getElementsByClassName("msg");
 	  while (elms.length > 1)
