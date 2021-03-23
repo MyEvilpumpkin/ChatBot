@@ -68,6 +68,7 @@ body {
 
 .msger-header-title b {
   color: rgb(50, 110, 180);
+  cursor: pointer;
 }
 
 .msger-header-title b:hover {

@@ -55,6 +55,7 @@ body {
 
 .header-title b {
   color: rgb(50, 110, 180);
+  cursor: pointer;
 }
 
 .header-title b:hover {

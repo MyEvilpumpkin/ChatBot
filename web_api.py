@@ -32,7 +32,7 @@ def reformat_response(data):
 @app.route("/")
 @login_required
 def home():
-    return render_template("index.html")
+    return render_template("chatbot.html")
 
 
 @app.route("/getresponse")
