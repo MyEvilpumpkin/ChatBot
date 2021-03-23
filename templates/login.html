@@ -21,10 +21,10 @@
 	<div class="login-info"><b>Для доступа к боту <br>необходимо залогиниться</b></div>
 	<div class="login-info login-error"></div>
 	
-	<form class="login-form">
+	<form class="login-form" action="/login" method="post">
       <input type="text" class="field input" name="login" placeholder="Логин" required><br>
 	  <input type="password" class="field input" name="password" placeholder="Пароль" required><br>
-      <input type="submit" class="button input" value="Войти" formaction="/login" formmethod="post">
+      <button type="submit" class="button input">Войти</button>
     </form>
 		
 	</main>
