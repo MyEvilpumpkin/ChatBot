@@ -7,15 +7,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/chatbot.css') }}">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 
-<body onload="bodyonload()">
+<body onload="bodyOnLoad()">
 
   <section class="msger">
 
     <header class="msger-header">
+      <div class="menu-icon">
+	    <ul class="menu-icons" onclick="showMenu()">
+	      <li></li>
+	      <li></li>
+	      <li></li>
+        </ul>
+	  </div>
       <div class="msger-header-title"><b>Росатом чатбот</b></div>
       <div class="dropdown">
 	    <ul class="icons" onclick="showDropdown()">
@@ -25,17 +33,52 @@
         </ul>
 	    <div id="dropdown-list" class="dropdown-content">
 		  <a onclick="clearChat()">Очистить чат</a>
-		  <a onclick="logout()">Выйти</a>
+<!--		  <a onclick="logout()">Выйти</a>-->
 	    </div>
 	  </div>
     </header>
 
-    <main class="msger-chat" style="background-image: url({{ url_for('static', filename='images/background.png') }})"></main>
+    <div class="msger-body">
+	  <menu class="menu menu-element">
+		<div id="menu-list" class="menu-content menu-element">
+		  <div class="menu-list-item menu-content-top menu-element">
+			<div class="user-info user-avatar menu-element">
+			</div>
+			  <div class="user-info user-fio menu-element">
+			    <div class="user-info user-surname menu-element"></div>
+			    <div class="user-info user-name menu-element"></div>
+			    <div class="user-info user-patronymic menu-element"></div>
+			    <div class="user-info user-department menu-element"></div>
+			    <div class="user-info user-experience menu-element"></div>
+			  </div>
+		    </div>
+		  <div class="menu-list-item menu-content-middle menu-element">
+			<div class="menu-content-middle-top menu-element">
+			  <a onclick="chatbot()">Чатбот</a>
+			  <a onclick="quests()">Квесты</a>
+			  <a onclick="meetings()">Встречи</a>
+			  <a onclick="jobs()">Дела</a>
+			</div>
+			<div class="menu-content-middle-bottom menu-element">
+			  <a onclick="logout()">Выйти</a>
+			</div>
+		  </div>
+		  <div class="menu-list-item menu-content-bottom menu-element">
+		    <div class="app-version menu-element"></div>
+		  </div>
+	    </div>
+	  </menu>
 
-    <form class="msger-inputarea">
-      <input type="text" class="msger-input" id="textInput" placeholder="Напиши свой вопрос..." autocomplete="off">
-      <button type="submit" class="msger-send-btn">Отправить</button>
-    </form>
+	  <div class="msger-chat-form">
+		<main class="msger-chat" style="background-image: url({{ url_for('static', filename='images/background.png') }})"></main>
+
+		<form class="msger-inputarea">
+          <input type="text" class="msger-input" id="textInput" placeholder="Напиши свой вопрос..." autocomplete="off">
+          <button type="submit" class="msger-send-btn">Отправить</button>
+        </form>
+	  </div>
+
+    </div>
 
   </section>
 
@@ -50,6 +93,23 @@
     const BOT_NAME = "Атом";
     const PERSON_NAME = "Ты";
 
+    function bodyOnLoad() {
+      $.get("/getfirstmessage").done(function (data) {
+        const msgText = data;
+        appendMessage(BOT_NAME, BOT_IMG, "left", msgText);
+      });
+      $.get("/getuserdata").done(function (data) {
+        const userData = JSON.parse(data);
+        $('.user-surname').text(userData.surname);
+        $('.user-name').text(userData.name);
+        $('.user-patronymic').text(userData.patronymic);
+        $('.user-department').text(userData.department);
+        $('.user-experience').text(userData.experience);
+        document.getElementsByClassName("user-avatar")[0].style.backgroundImage = userData.photo;
+        $('.app-version').text(userData.version);
+      });
+    }
+
     msgerForm.addEventListener("submit", event => {
       event.preventDefault();
       const msgText = msgerInput.value;
@@ -59,17 +119,27 @@
       botResponse(msgText);
     });
 
-    function showDropdown() {
-	  document.getElementById("dropdown-list").classList.toggle("show");
-	}
-
-	window.onclick = function(event) {
+    window.onclick = function(event) {
 	  if (!event.target.matches('.icons')) {
 		let dropdowns = document.getElementsByClassName("dropdown-content");
 		for (let i = 0; i < dropdowns.length; i++)
 		  if (dropdowns[i].classList.contains('show'))
 			dropdowns[i].classList.remove('show');
 	  }
+	  if (!event.target.matches('.menu-icons') && !event.target.matches('.menu-element')) {
+		let menu = document.getElementsByClassName("menu-content");
+		for (let i = 0; i < menu.length; i++)
+		  if (menu[i].classList.contains('show-menu'))
+			menu[i].classList.remove('show-menu');
+	  }
+	}
+
+	function showDropdown() {
+	  document.getElementById("dropdown-list").classList.toggle("show");
+	}
+
+	function showMenu() {
+	  document.getElementById("menu-list").classList.toggle("show-menu");
 	}
 
 	function imgOnClick(img) {
@@ -95,18 +165,8 @@
       })
 	}
 
-    function bodyonload() {
-		$.get("/getfirstmessage").done(function (data) {
-        console.log(data);
-        const msgText = data;
-        appendMessage(BOT_NAME, BOT_IMG, "left", msgText);
-      });
-	}
-
     function botResponse(rawText) {
       $.get("/getresponse", { msg: rawText }).done(function (data) {
-        console.log(rawText);
-        console.log(data);
         const msgText = data;
         appendMessage(BOT_NAME, BOT_IMG, "left", msgText);
       });
@@ -128,13 +188,22 @@
     }
 
     function appendMessage(name, img, side, text) {
+      let personImg = img;
+      let personName = name;
+	  if (side == "right") {
+	  	if (!(String(document.getElementsByClassName("user-avatar")[0].style.backgroundImage).indexOf("nophoto") + 1)) {
+	  	  personImg = document.getElementsByClassName("user-avatar")[0].style.backgroundImage;
+		  personImg = personImg.slice(5, -1);
+		}
+		personName = document.getElementsByClassName("user-name")[0].innerText;
+	  }
       const msgHTML = `
         <div class="msg ${side}-msg">
-          <div class="msg-img" style="background-image: url(${img})"></div>
+          <div class="msg-img" style="background-image: url(${personImg})"></div>
 
           <div class="msg-bubble">
             <div class="msg-info">
-              <div class="msg-info-name">${name}</div>
+              <div class="msg-info-name">${personName}</div>
               <div class="msg-info-time">${formatDate(new Date())}</div>
             </div>
 

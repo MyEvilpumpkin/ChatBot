@@ -63,7 +63,6 @@ body {
 
 .msger-header-title {
   width: 100%;
-  margin-left: 5px;
 }
 
 .msger-header-title b {
@@ -73,6 +72,21 @@ body {
 
 .msger-header-title b:hover {
   color: rgb(30, 70, 140);
+}
+
+.msger-body {
+	display:flex;
+	justify-content: space-between;
+	flex-direction: row;
+	overflow-y: auto;
+	flex: 1;
+}
+
+.msger-chat-form {
+	width: 100%;
+	display: flex;
+  	flex-flow: column wrap;
+  	justify-content: space-between;
 }
 
 .msger-chat {
@@ -333,3 +347,141 @@ body {
 .show {
   display:block;
 }
+
+.menu-icon {
+  cursor: pointer;
+}
+
+.menu-icons li {
+  background: none repeat scroll 0 0 rgb(50, 110, 180);
+  height: 5px;
+  width: 25px;
+  list-style: none outside none;
+  margin-top: 2px;
+  border-radius: 15px;
+  font-size: 1em;
+  cursor: pointer;
+  pointer-events: none;
+  margin-left: 5px;
+}
+
+.menu-icons:hover li {
+  background: none repeat scroll 0 0 rgb(30, 70, 140);
+}
+
+@media all and (max-width: 576px) {
+  .menu-icons li {
+    height: 4px;
+	width: 20px;
+  }
+}
+
+.menu {
+  position: relative;
+}
+
+.menu-content {
+  display: none;
+  position: absolute;
+  height: 100%;
+  background-color: #f9f9f9;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  flex-flow: column;
+  cursor: default;
+}
+
+@media all and (max-width: 576px) {
+  .menu-content {
+    font-size: 0.85em;
+  }
+}
+
+.menu-list-item {
+  padding: 5px;
+}
+
+.user-info {
+  padding: 5px;
+  white-space: nowrap;
+}
+
+.menu-list-item {
+  min-width: 320px;
+
+}
+
+@media all and (max-width: 576px) {
+  .menu-list-item {
+    min-width: 260px;
+  }
+}
+
+.menu-content-top {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  justify-content: space-around;
+  border-bottom: var(--border);
+}
+
+.menu-content-middle {
+  display: flex;
+  flex-flow: column;
+  padding: 0px;
+  height: 100%;
+  text-align: center;
+  font-size: 1.2em;
+}
+
+.menu-content-middle-bottom{
+  margin-top: auto;
+  margin-bottom: 0px;
+}
+
+.menu-content-bottom {
+  margin-top: auto;
+  margin-bottom: 5px;
+  text-align: center;
+  border-top: var(--border);
+}
+
+.menu-content a {
+  color: black;
+  padding: 10px;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+}
+
+.menu-content a:hover {
+  background-color: #ececec;
+}
+
+.user-avatar{
+  height: 140px;
+  width: 140px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  border-radius: 15px;
+  border: var(--border);
+  margin-left: 5px;
+}
+
+@media all and (max-width: 576px) {
+  .user-avatar {
+    height: 120px;
+    width: 120px;
+  }
+}
+
+.app-version {
+  font-size: 0.85em;
+  color: #aeaeae;
+}
+
+.show-menu {
+  display: flex;
+}
+
