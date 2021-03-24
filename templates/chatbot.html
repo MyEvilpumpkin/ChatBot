@@ -7,7 +7,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/chatbot.css') }}">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 
@@ -72,6 +72,17 @@
 	  }
 	}
 
+	function imgOnClick(img) {
+	  if (img.classList.contains("popup")){
+		img.classList.remove("popup");
+		img.getElementsByTagName("img")[0].classList.remove("full-img");
+	  }
+	  else {
+		img.classList.add("popup");
+		img.getElementsByTagName("img")[0].classList.add("full-img");
+	  }
+	}
+
 	function clearChat() {
 	  let elms = document.getElementsByClassName("msg");
 	  while (elms.length > 1)
@@ -133,7 +144,7 @@
       `;
 
       msgerChat.insertAdjacentHTML("beforeend", msgHTML);
-      msgerChat.scrollTop += 500;
+      msgerChat.scrollTop = msgerChat.scrollHeight;
     }
 
   </script>

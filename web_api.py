@@ -9,6 +9,19 @@ app = create_app()
 
 def reformat_response(data):
     text = str(data[0])
+    index = 0
+    while True:
+        start_index = text.find("<img", index)
+        if start_index == -1:
+            break
+        else:
+            end_index = text.find(">", start_index)
+            if end_index != -1:
+                text = text.replace(text[start_index:end_index+1], "<a onclick=\"imgOnClick(this)\">" +
+                                    text[start_index:end_index+1] + "</a>", 1)
+                index = end_index
+    text = text.replace("%salary", str(current_user.salary))
+
     commands = data[1]
     if len(commands):
         text += "</div><div class=\"msg-commands\">"
@@ -20,7 +33,7 @@ def reformat_response(data):
 @app.route("/")
 @login_required
 def home():
-    return render_template("index.html")
+    return render_template("chatbot.html")
 
 
 @app.route("/getresponse")

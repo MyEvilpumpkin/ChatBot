@@ -68,6 +68,7 @@ body {
 
 .msger-header-title b {
   color: rgb(50, 110, 180);
+  cursor: pointer;
 }
 
 .msger-header-title b:hover {
@@ -168,12 +169,44 @@ body {
   margin: 0 0 0 10px;
 }
 
+.msg-text img:not(.full-img) {
+  max-width: 420px;
+  cursor: pointer;
+}
+
+@media all and (max-width: 576px) {
+  .msg-text img:not(.full-img) {
+	max-width: 260px;
+  }
+}
+
+.popup {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0,0,0,0.9);
+  cursor: pointer;
+}
+
+.full-img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100%;
+  max-height: 100%;
+}
+
 .msg-command {
   text-align: center;
   margin: 5px;
   padding: 5px;
   border-radius: 15px;
   background: var(--left-cmd-bg);
+  cursor: pointer;
 }
 
 .msg-command:hover {
@@ -238,6 +271,10 @@ body {
 .msger-chat {
   background-color: #fcfcfe;
   background-size: auto 100%;
+}
+
+.dropdown {
+  cursor: pointer;
 }
 
 .icons li {
