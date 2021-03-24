@@ -20,6 +20,7 @@ def reformat_response(data):
                 text = text.replace(text[start_index:end_index+1], "<a onclick=\"imgOnClick(this)\">" +
                                     text[start_index:end_index+1] + "</a>", 1)
                 index = end_index
+    text = text.replace("%salary", str(current_user.salary))
 
     commands = data[1]
     if len(commands):
