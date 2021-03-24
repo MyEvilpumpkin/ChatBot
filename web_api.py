@@ -36,6 +36,22 @@ def home():
     return render_template("chatbot.html")
 
 
+@app.route("/getuserdata")
+@login_required
+def get_user_data():
+    if current_user.photo is None:
+        photo = url_for('static', filename='images/nophoto.jpg')
+    else:
+        photo = current_user.photo
+    return '{"surname":"' + str(current_user.surname) + '",' + \
+           '"name":"' + str(current_user.name) + '",' + \
+           '"patronymic":"' + str(current_user.patronymic) + '",' + \
+           '"department":"отдел ' + str(current_user.department) + '",' + \
+           '"experience":"стаж с ' + str(current_user.experience) + '",' + \
+           '"photo":"url(' + str(photo) + ')",' + \
+           '"version":"Версия 0.23"}'
+
+
 @app.route("/getresponse")
 @login_required
 def get_bot_response():
