@@ -63,6 +63,7 @@ body {
 
 .msger-header-title {
   width: 100%;
+  margin-left: 30px;
 }
 
 .msger-header-title b {
@@ -287,66 +288,66 @@ body {
   background-size: auto 100%;
 }
 
-.dropdown {
-  cursor: pointer;
-}
+/*.dropdown {*/
+/*  cursor: pointer;*/
+/*}*/
 
-.icons li {
-  background: none repeat scroll 0 0 rgb(50, 110, 180);
-  height: 5px;
-  width: 5px;
-  list-style: none outside none;
-  margin-top: 2px;
-  border-radius:50%;
-  font-size: 1em;
-  cursor: pointer;
-  pointer-events: none;
-  margin-right: 5px;
-}
+/*.icons li {*/
+/*  background: none repeat scroll 0 0 rgb(50, 110, 180);*/
+/*  height: 5px;*/
+/*  width: 5px;*/
+/*  list-style: none outside none;*/
+/*  margin-top: 2px;*/
+/*  border-radius:50%;*/
+/*  font-size: 1em;*/
+/*  cursor: pointer;*/
+/*  pointer-events: none;*/
+/*  margin-right: 5px;*/
+/*}*/
 
-.icons:hover li {
-  background: none repeat scroll 0 0 rgb(30, 70, 140);
-}
+/*.icons:hover li {*/
+/*  background: none repeat scroll 0 0 rgb(30, 70, 140);*/
+/*}*/
 
-@media all and (max-width: 576px) {
-  .icons li {
-    height: 4px;
-	width: 4px;
-  }
-}
+/*@media all and (max-width: 576px) {*/
+/*  .icons li {*/
+/*    height: 4px;*/
+/*	width: 4px;*/
+/*  }*/
+/*}*/
 
-.dropdown-content {
-  display: none;
-  position: absolute;
-  margin-top: 10px;
-  margin-left: -160px;
-  width: 160px;
-  background-color: #f9f9f9;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
+/*.dropdown-content {*/
+/*  display: none;*/
+/*  position: absolute;*/
+/*  margin-top: 10px;*/
+/*  margin-left: -160px;*/
+/*  width: 160px;*/
+/*  background-color: #f9f9f9;*/
+/*  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);*/
+/*  z-index: 1;*/
+/*}*/
 
-@media all and (max-width: 576px) {
-  .dropdown-content {
-    margin-left: -140px;
-	width: 140px;
-  }
-}
+/*@media all and (max-width: 576px) {*/
+/*  .dropdown-content {*/
+/*    margin-left: -140px;*/
+/*	width: 140px;*/
+/*  }*/
+/*}*/
 
-.dropdown-content a {
-  color: black;
-  padding: 10px;
-  text-decoration: none;
-  display: block;
-}
+/*.dropdown-content a {*/
+/*  color: black;*/
+/*  padding: 10px;*/
+/*  text-decoration: none;*/
+/*  display: block;*/
+/*}*/
 
-.dropdown-content a:hover {
-  background-color: #ececec;
-}
+/*.dropdown-content a:hover {*/
+/*  background-color: #ececec;*/
+/*}*/
 
-.show {
-  display:block;
-}
+/*.show {*/
+/*  display:block;*/
+/*}*/
 
 .menu-icon {
   cursor: pointer;
@@ -408,7 +409,6 @@ body {
 
 .menu-list-item {
   min-width: 320px;
-
 }
 
 @media all and (max-width: 576px) {

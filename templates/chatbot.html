@@ -4,7 +4,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Росатом чатбот</title>
-  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}">
@@ -15,7 +14,6 @@
 <body onload="bodyOnLoad()">
 
   <section class="msger">
-
     <header class="msger-header">
       <div class="menu-icon">
 	    <ul class="menu-icons" onclick="showMenu()">
@@ -25,19 +23,18 @@
         </ul>
 	  </div>
       <div class="msger-header-title"><b>Росатом чатбот</b></div>
-      <div class="dropdown">
-	    <ul class="icons" onclick="showDropdown()">
-	      <li></li>
-	      <li></li>
-	      <li></li>
-        </ul>
-	    <div id="dropdown-list" class="dropdown-content">
-		  <a onclick="clearChat()">Очистить чат</a>
+<!--      <div class="dropdown">-->
+<!--	    <ul class="icons" onclick="showDropdown()">-->
+<!--	      <li></li>-->
+<!--	      <li></li>-->
+<!--	      <li></li>-->
+<!--        </ul>-->
+<!--	    <div id="dropdown-list" class="dropdown-content">-->
+<!--		  <a onclick="clearChat()">Очистить чат</a>-->
 <!--		  <a onclick="logout()">Выйти</a>-->
-	    </div>
-	  </div>
+<!--	    </div>-->
+<!--	  </div>-->
     </header>
-
     <div class="msger-body">
 	  <menu class="menu menu-element">
 		<div id="menu-list" class="menu-content menu-element">
@@ -68,25 +65,11 @@
 		  </div>
 	    </div>
 	  </menu>
-
-	  <div class="msger-chat-form">
-		<main class="msger-chat" style="background-image: url({{ url_for('static', filename='images/background.png') }})"></main>
-
-		<form class="msger-inputarea">
-          <input type="text" class="msger-input" id="textInput" placeholder="Напиши свой вопрос..." autocomplete="off">
-          <button type="submit" class="msger-send-btn">Отправить</button>
-        </form>
-	  </div>
-
+	  <div class="main"></div>
     </div>
-
   </section>
 
   <script>
-
-    const msgerForm = get(".msger-inputarea");
-    const msgerInput = get(".msger-input");
-    const msgerChat = get(".msger-chat");
 
     const BOT_IMG = "{{ url_for('static', filename='images/logo.png') }}";
     const PERSON_IMG = "{{ url_for('static', filename='images/logo2.png') }}";
@@ -94,12 +77,9 @@
     const PERSON_NAME = "Ты";
 
     function bodyOnLoad() {
-      $.get("/getfirstmessage").done(function (data) {
-        const msgText = data;
-        appendMessage(BOT_NAME, BOT_IMG, "left", msgText);
-      });
+      getchatbot();
       $.get("/getuserdata").done(function (data) {
-        const userData = JSON.parse(data);
+        let userData = JSON.parse(data);
         $('.user-surname').text(userData.surname);
         $('.user-name').text(userData.name);
         $('.user-patronymic').text(userData.patronymic);
@@ -110,22 +90,77 @@
       });
     }
 
-    msgerForm.addEventListener("submit", event => {
-      event.preventDefault();
-      const msgText = msgerInput.value;
-      if (!msgText) return;
-      appendMessage(PERSON_NAME, PERSON_IMG, "right", msgText);
-      msgerInput.value = "";
-      botResponse(msgText);
-    });
+    function chatbot() {
+      if(! $('.main').hasClass('msger-chat-form'))
+      	getchatbot();
+	}
+
+    function getchatbot() {
+      $.get("/getchatbot").done(function (data) {
+        $('.main').html(data);
+        $('.main').removeClass('msger-quests-form msger-meetings-form msger-jobs-form').addClass('msger-chat-form');
+
+        let msgerForm = get(".msger-inputarea");
+
+        msgerForm.addEventListener("submit", event => {
+	      event.preventDefault();
+	      let msgerInput = get(".msger-input");
+	      let msgText = msgerInput.value;
+		  if (!msgText) return;
+		  appendMessage(PERSON_NAME, PERSON_IMG, "right", msgText);
+		  msgerInput.value = "";
+		  botResponse(msgText);
+		});
+	  });
+      $.get("/getfirstmessage").done(function (data) {
+        let msgText = data;
+        appendMessage(BOT_NAME, BOT_IMG, "left", msgText);
+      });
+	}
+
+	function quests() {
+      if(! $('.main').hasClass('msger-quests-form'))
+      	getquests();
+	}
+
+    function getquests() {
+      $.get("/getquests").done(function (data) {
+      	 $('.main').html(data);
+      	 $('.main').removeClass('msger-chat-form msger-meetings-form msger-jobs-form').addClass('msger-quests-form');
+	  });
+	}
+
+	function meetings() {
+      if(! $('.main').hasClass('msger-meetings-form'))
+      	getmeetings();
+	}
+
+    function getmeetings() {
+      $.get("/getmeetings").done(function (data) {
+      	 $('.main').html(data);
+      	 $('.main').removeClass('msger-chat-form msger-quests-form msger-jobs-form').addClass('msger-meetings-form');
+	  });
+	}
+
+	function jobs() {
+      if(! $('.main').hasClass('msger-jobs-form'))
+      	getjobs();
+	}
+
+    function getjobs() {
+      $.get("/getjobs").done(function (data) {
+      	 $('.main').html(data);
+      	 $('.main').removeClass('msger-chat-form msger-quests-form msger-meetings-form').addClass('msger-jobs-form');
+	  });
+	}
 
     window.onclick = function(event) {
-	  if (!event.target.matches('.icons')) {
-		let dropdowns = document.getElementsByClassName("dropdown-content");
-		for (let i = 0; i < dropdowns.length; i++)
-		  if (dropdowns[i].classList.contains('show'))
-			dropdowns[i].classList.remove('show');
-	  }
+	  // if (!event.target.matches('.icons')) {
+		// let dropdowns = document.getElementsByClassName("dropdown-content");
+		// for (let i = 0; i < dropdowns.length; i++)
+		//   if (dropdowns[i].classList.contains('show'))
+		// 	dropdowns[i].classList.remove('show');
+	  // }
 	  if (!event.target.matches('.menu-icons') && !event.target.matches('.menu-element')) {
 		let menu = document.getElementsByClassName("menu-content");
 		for (let i = 0; i < menu.length; i++)
@@ -134,9 +169,9 @@
 	  }
 	}
 
-	function showDropdown() {
-	  document.getElementById("dropdown-list").classList.toggle("show");
-	}
+	// function showDropdown() {
+	//   document.getElementById("dropdown-list").classList.toggle("show");
+	// }
 
 	function showMenu() {
 	  document.getElementById("menu-list").classList.toggle("show-menu");
@@ -153,11 +188,11 @@
 	  }
 	}
 
-	function clearChat() {
-	  let elms = document.getElementsByClassName("msg");
-	  while (elms.length > 1)
-		  elms[1].remove();
-	}
+	// function clearChat() {
+	//   let elms = document.getElementsByClassName("msg");
+	//   while (elms.length > 1)
+	// 	  elms[1].remove();
+	// }
 
 	function logout() {
 	  $.get("/logout").done(function () {
@@ -167,7 +202,7 @@
 
     function botResponse(rawText) {
       $.get("/getresponse", { msg: rawText }).done(function (data) {
-        const msgText = data;
+        let msgText = data;
         appendMessage(BOT_NAME, BOT_IMG, "left", msgText);
       });
     }
@@ -182,8 +217,8 @@
     }
 
     function formatDate(date) {
-      const h = "0" + date.getHours();
-      const m = "0" + date.getMinutes();
+      let h = "0" + date.getHours();
+      let m = "0" + date.getMinutes();
       return `${h.slice(-2)}:${m.slice(-2)}`;
     }
 
@@ -197,7 +232,7 @@
 		}
 		personName = document.getElementsByClassName("user-name")[0].innerText;
 	  }
-      const msgHTML = `
+      let msgHTML = `
         <div class="msg ${side}-msg">
           <div class="msg-img" style="background-image: url(${personImg})"></div>
 
@@ -211,7 +246,7 @@
           </div>
         </div>
       `;
-
+	  let msgerChat = get(".msger-chat");
       msgerChat.insertAdjacentHTML("beforeend", msgHTML);
       msgerChat.scrollTop = msgerChat.scrollHeight;
     }

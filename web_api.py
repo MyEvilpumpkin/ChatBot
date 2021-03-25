@@ -17,8 +17,8 @@ def reformat_response(data):
         else:
             end_index = text.find(">", start_index)
             if end_index != -1:
-                text = text.replace(text[start_index:end_index+1], "<a onclick=\"imgOnClick(this)\">" +
-                                    text[start_index:end_index+1] + "</a>", 1)
+                text = text.replace(text[start_index:end_index + 1], "<a onclick=\"imgOnClick(this)\">" +
+                                    text[start_index:end_index + 1] + "</a>", 1)
                 index = end_index
     text = text.replace("%salary", str(current_user.salary))
 
@@ -92,6 +92,34 @@ def login_post():
 def logout():
     logout_user()
     return redirect(url_for('login'))
+
+
+@app.route('/getchatbot')
+@login_required
+def get_chatbot():
+    return "<main class=\"msger-chat\" style=\"background-image: " \
+           "url(" + url_for('static', filename='images/background.png') + ")\"></main> \
+           <form class=\"msger-inputarea\"> \
+           <input type=\"text\" class=\"msger-input\" id=\"textInput\" placeholder=\"Напиши свой вопрос...\" " \
+           "autocomplete=\"off\"> \
+           <button type=\"submit\" class=\"msger-send-btn\">Отправить</button> \
+           </form>"
+
+
+@app.route('/getquests')
+@login_required
+def get_quests():
+    return "<div>test quests</div>"
+
+@app.route('/getmeetings')
+@login_required
+def get_meetings():
+    return "<div>test meetings</div>"
+
+@app.route('/getjobs')
+@login_required
+def get_jobs():
+    return "<div>test jobs</div>"
 
 
 if __name__ == "__main__":
