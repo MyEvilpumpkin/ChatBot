@@ -27,6 +27,7 @@ def reformat_response(data):
         text += "</div><div class=\"msg-commands\">"
         for command in commands:
             text += "<div class=\"msg-command\" onClick=\"cmdOnClick(this.innerText)\">" + str(command[0]) + "</div>"
+
     return text
 
 
@@ -49,7 +50,7 @@ def get_user_data():
            '"department":"отдел ' + str(current_user.department) + '",' + \
            '"experience":"стаж с ' + str(current_user.experience) + '",' + \
            '"photo":"url(' + str(photo) + ')",' + \
-           '"version":"Версия 0.23"}'
+           '"version":"Версия 0.25"}'
 
 
 @app.route("/getresponse")
@@ -94,32 +95,10 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route('/getchatbot')
-@login_required
-def get_chatbot():
-    return "<main class=\"msger-chat\" style=\"background-image: " \
-           "url(" + url_for('static', filename='images/background.png') + ")\"></main> \
-           <form class=\"msger-inputarea\"> \
-           <input type=\"text\" class=\"msger-input\" id=\"textInput\" placeholder=\"Напиши свой вопрос...\" " \
-           "autocomplete=\"off\"> \
-           <button type=\"submit\" class=\"msger-send-btn\">Отправить</button> \
-           </form>"
-
-
 @app.route('/getquests')
 @login_required
 def get_quests():
     return "<div>test quests</div>"
-
-@app.route('/getmeetings')
-@login_required
-def get_meetings():
-    return "<div>test meetings</div>"
-
-@app.route('/getjobs')
-@login_required
-def get_jobs():
-    return "<div>test jobs</div>"
 
 
 if __name__ == "__main__":
