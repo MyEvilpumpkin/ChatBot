@@ -118,7 +118,12 @@
 		}
 
 		function showMenu() {
-			$('.menu-list').toggleClass('show-menu');
+    	let $menuList = $('.menu-list');
+			$menuList.toggleClass('show-menu');
+			if ($menuList.hasClass('show-menu'))
+				$menuList.removeClass('hide-menu');
+			else
+				$menuList.addClass('hide-menu');
 		}
 
 		function cmdOnClick(data) {

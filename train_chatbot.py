@@ -17,8 +17,8 @@ ignore_words = ['?', '!']
 # Коннектим БД
 connection = sqlite3.connect("ChatbotDB.db")
 cursor = connection.cursor()
-cursor.execute("SELECT patterns.pattern_text, tags.tag_name "
-               "FROM patterns INNER JOIN tags ON patterns.tag_id = tags.tag_id")
+cursor.execute("SELECT patterns.text, tags.name "
+               "FROM patterns INNER JOIN tags ON patterns.tag_id = tags.id")
 patterns = cursor.fetchall()
 
 # Токенизация - разбиение текста на слова

@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for
 from flask_login import login_user, logout_user, login_required, current_user
 from chatbot_api import chatbot_response
-from models import Users, Jobs
+from models import Users, Jobs, Quests, Quest_parts, Walkthrough
 from __init__ import create_app
 
 app = create_app()
