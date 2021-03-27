@@ -13,3 +13,9 @@ class Users(UserMixin, db.Model):
     login = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
     photo = db.Column(db.String(1000000))
+
+
+class Jobs(db.Model):
+    jobid = db.Column(db.Integer, primary_key=True)
+    jobtext = db.Column(db.String(1000))
+    userid = db.Column(db.Integer, db.ForeignKey(Users.id))

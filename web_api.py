@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for
 from flask_login import login_user, logout_user, login_required, current_user
 from chatbot_api import chatbot_response
-from models import Users
+from models import Users, Jobs
 from __init__ import create_app
 
 app = create_app()
@@ -21,6 +21,12 @@ def reformat_response(data):
                                     text[start_index:end_index + 1] + "</a>", 1)
                 index = end_index
     text = text.replace("%salary", str(current_user.salary))
+    if text.find("%jobs") != -1:
+        jobs = Jobs.query.filter_by(userid=current_user.id)
+        jobsstr = ""
+        for job in jobs:
+            jobsstr += "<li>" + job.jobtext + "</li>"
+        text = text.replace("%jobs", jobsstr)
 
     commands = data[1]
     if len(commands):
