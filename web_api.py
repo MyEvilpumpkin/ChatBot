@@ -25,10 +25,10 @@ def reformat_response(data):
                 index = end_index
     text = text.replace("%salary", str(current_user.salary))
     if text.find("%jobs") != -1:
-        jobs = Jobs.query.filter_by(userid=current_user.id)
+        jobs = Jobs.query.filter_by(user_id=current_user.id)
         jobsstr = ""
         for job in jobs:
-            jobsstr += "<li>" + job.jobtext + "</li>"
+            jobsstr += "<li>" + job.text + "</li>"
         text = text.replace("%jobs", jobsstr)
 
     commands = data[1]
