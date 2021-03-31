@@ -1,11 +1,7 @@
 :root {
   --body-bg: linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%);
-  --msger-bg: #fff;
   --border: 2px solid #ddd;
   --left-msg-bg: #ececec;
-  --right-msg-bg: linear-gradient(180deg, rgb(160, 200, 240) 0%, rgb(50, 110, 180) 100%) fixed;
-  --left-cmd-bg: #cecece;
-  --left-cmd-bg-hover: #aeaeae;
 }
 
 html {

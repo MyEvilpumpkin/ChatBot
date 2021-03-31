@@ -1,7 +1,10 @@
+import sqlite3
+
 from flask import render_template, request, redirect, url_for
 from flask_login import login_user, logout_user, login_required, current_user
+
 from chatbot_api import chatbot_response
-from models import Users
+from models import Users, Jobs
 from __init__ import create_app
 
 app = create_app()
@@ -17,10 +20,16 @@ def reformat_response(data):
         else:
             end_index = text.find(">", start_index)
             if end_index != -1:
-                text = text.replace(text[start_index:end_index+1], "<a onclick=\"imgOnClick(this)\">" +
-                                    text[start_index:end_index+1] + "</a>", 1)
+                text = text.replace(text[start_index:end_index + 1], "<a onclick=\"imgOnClick(this)\">" +
+                                    text[start_index:end_index + 1] + "</a>", 1)
                 index = end_index
     text = text.replace("%salary", str(current_user.salary))
+    if text.find("%jobs") != -1:
+        jobs = Jobs.query.filter_by(userid=current_user.id)
+        jobsstr = ""
+        for job in jobs:
+            jobsstr += "<li>" + job.jobtext + "</li>"
+        text = text.replace("%jobs", jobsstr)
 
     commands = data[1]
     if len(commands):
@@ -49,7 +58,7 @@ def get_user_data():
            '"department":"отдел ' + str(current_user.department) + '",' + \
            '"experience":"стаж с ' + str(current_user.experience) + '",' + \
            '"photo":"url(' + str(photo) + ')",' + \
-           '"version":"Версия 0.23"}'
+           '"version":"Версия 0.25"}'
 
 
 @app.route("/getresponse")
@@ -92,6 +101,92 @@ def login_post():
 def logout():
     logout_user()
     return redirect(url_for('login'))
+
+
+@app.route('/getquests')
+@login_required
+def get_quests():
+    connection = sqlite3.connect("UsersDB.db")
+    cursor = connection.cursor()
+    query = cursor.execute("SELECT "
+                           "Quests.id AS quest_id, "
+                           "Quests.name AS quest_name, "
+                           "Quests.description AS quest_description, "
+                           "QuestWalkthrough.status AS quest_status, "
+                           "QuestPartWalkthrough.id AS questPart_id, "
+                           "QuestPartWalkthrough.name AS questPart_name, "
+                           "QuestPartWalkthrough.text AS questPart_text, "
+                           "QuestPartWalkthrough.status AS questPart_status "
+                           "FROM "
+                           "Quests INNER JOIN (SELECT "
+                           "QuestPartWalkthrough.quest_id, "
+                           "MIN(QuestPartWalkthrough.status) AS status "
+                           "FROM "
+                           "(SELECT "
+                           "Quest_parts.quest_id, "
+                           "IFNULL(UserWalkthrough.status, 0) AS status "
+                           "FROM "
+                           "Quest_parts "
+                           "LEFT JOIN "
+                           "(SELECT "
+                           "Walkthrough.questpart_id, "
+                           "1 AS status "
+                           "FROM "
+                           "Walkthrough "
+                           "WHERE "
+                           "Walkthrough.user_id = %user_id) AS UserWalkthrough "
+                           "ON (Quest_parts.id = UserWalkthrough.questpart_id)) AS QuestPartWalkthrough "
+                           "GROUP BY QuestPartWalkthrough.quest_id) AS QuestWalkthrough "
+                           "ON (Quests.id = QuestWalkthrough.quest_id) "
+                           "INNER JOIN (SELECT "
+                           "Quest_parts.id, "
+                           "Quest_parts.name, "
+                           "Quest_parts.text, "
+                           "Quest_parts.quest_id, "
+                           "IFNULL(UserWalkthrough.status, 0) AS status "
+                           "FROM "
+                           "Quest_parts "
+                           "LEFT JOIN "
+                           "(SELECT "
+                           "Walkthrough.questpart_id, "
+                           "1 AS status "
+                           "FROM "
+                           "Walkthrough "
+                           "WHERE "
+                           "Walkthrough.user_id = %user_id) AS UserWalkthrough "
+                           "ON (Quest_parts.id = UserWalkthrough.questpart_id)) AS QuestPartWalkthrough "
+                           "ON (Quests.id = QuestPartWalkthrough.quest_id) "
+                           "ORDER BY "
+                           "Quests.id, "
+                           "QuestPartWalkthrough.id".replace("%user_id", str(current_user.id))).fetchall()
+    result = "{\"quests\":["
+    quest_id = -1
+    res = ""
+    for row in query:
+        if quest_id != row[0]:
+            result += res
+            if quest_id != -1:
+                res = "]},"
+            else:
+                res = ""
+            res += "{"
+            res += "\"id\":\"" + str(row[0]) + "\","
+            res += "\"name\":\"" + str(row[1]) + "\","
+            res += "\"description\":\"" + str(row[2]) + "\","
+            res += "\"status\":\"" + str(row[3]) + "\","
+            res += "\"parts\":[{"
+            quest_id = row[0]
+        else:
+            res += ",{"
+        res += "\"id\":\"" + str(row[4]) + "\","
+        res += "\"name\":\"" + str(row[5]) + "\","
+        res += "\"text\":\"" + str(row[6]) + "\","
+        res += "\"status\":\"" + str(row[7]) + "\""
+        res += "}"
+    result += res
+    result += "]}]}"
+    result = result.replace("\r", "").replace("\n", "").replace("\t", "")
+    return result
 
 
 if __name__ == "__main__":

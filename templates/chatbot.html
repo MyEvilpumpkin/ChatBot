@@ -4,7 +4,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Росатом чатбот</title>
-  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}">
@@ -13,211 +12,175 @@
 </head>
 
 <body onload="bodyOnLoad()">
-
   <section class="msger">
-
     <header class="msger-header">
       <div class="menu-icon">
-	    <ul class="menu-icons" onclick="showMenu()">
-	      <li></li>
-	      <li></li>
-	      <li></li>
-        </ul>
-	  </div>
+				<ul class="menu-icons" onclick="showMenu()">
+					<li></li>
+					<li></li>
+					<li></li>
+				</ul>
+			</div>
       <div class="msger-header-title"><b>Росатом чатбот</b></div>
-      <div class="dropdown">
-	    <ul class="icons" onclick="showDropdown()">
-	      <li></li>
-	      <li></li>
-	      <li></li>
-        </ul>
-	    <div id="dropdown-list" class="dropdown-content">
-		  <a onclick="clearChat()">Очистить чат</a>
-<!--		  <a onclick="logout()">Выйти</a>-->
-	    </div>
-	  </div>
     </header>
-
     <div class="msger-body">
-	  <menu class="menu menu-element">
-		<div id="menu-list" class="menu-content menu-element">
-		  <div class="menu-list-item menu-content-top menu-element">
-			<div class="user-info user-avatar menu-element">
-			</div>
-			  <div class="user-info user-fio menu-element">
-			    <div class="user-info user-surname menu-element"></div>
-			    <div class="user-info user-name menu-element"></div>
-			    <div class="user-info user-patronymic menu-element"></div>
-			    <div class="user-info user-department menu-element"></div>
-			    <div class="user-info user-experience menu-element"></div>
-			  </div>
-		    </div>
-		  <div class="menu-list-item menu-content-middle menu-element">
-			<div class="menu-content-middle-top menu-element">
-			  <a onclick="chatbot()">Чатбот</a>
-			  <a onclick="quests()">Квесты</a>
-			  <a onclick="meetings()">Встречи</a>
-			  <a onclick="jobs()">Дела</a>
-			</div>
-			<div class="menu-content-middle-bottom menu-element">
-			  <a onclick="logout()">Выйти</a>
-			</div>
-		  </div>
-		  <div class="menu-list-item menu-content-bottom menu-element">
-		    <div class="app-version menu-element"></div>
-		  </div>
-	    </div>
-	  </menu>
-
-	  <div class="msger-chat-form">
-		<main class="msger-chat" style="background-image: url({{ url_for('static', filename='images/background.png') }})"></main>
-
-		<form class="msger-inputarea">
-          <input type="text" class="msger-input" id="textInput" placeholder="Напиши свой вопрос..." autocomplete="off">
-          <button type="submit" class="msger-send-btn">Отправить</button>
-        </form>
-	  </div>
-
+			<menu class="menu menu-element">
+				<div class="menu-list menu-content menu-element">
+					<div class="menu-list-item menu-content-top menu-element">
+						<div class="user-info user-avatar menu-element"></div>
+						<div class="user-info user-fio menu-element">
+							<div class="user-info user-surname menu-element"></div>
+							<div class="user-info user-name menu-element"></div>
+							<div class="user-info user-patronymic menu-element"></div>
+							<div class="user-info user-department menu-element"></div>
+							<div class="user-info user-experience menu-element"></div>
+						</div>
+					</div>
+					<div class="menu-list-item menu-content-middle menu-element">
+						<div class="menu-content-middle-top menu-element">
+							<a onclick="chatbot()">Чатбот</a>
+							<a onclick="quests()">Квесты</a>
+						</div>
+						<div class="menu-content-middle-bottom menu-element">
+							<a onclick="logout()">Выйти</a>
+						</div>
+					</div>
+					<div class="menu-list-item menu-content-bottom menu-element">
+						<div class="app-version menu-element"></div>
+					</div>
+				</div>
+			</menu>
+			<div class="main"></div>
     </div>
-
   </section>
-
   <script>
-
-    const msgerForm = get(".msger-inputarea");
-    const msgerInput = get(".msger-input");
-    const msgerChat = get(".msger-chat");
-
-    const BOT_IMG = "{{ url_for('static', filename='images/logo.png') }}";
-    const PERSON_IMG = "{{ url_for('static', filename='images/logo2.png') }}";
-    const BOT_NAME = "Атом";
-    const PERSON_NAME = "Ты";
-
     function bodyOnLoad() {
-      $.get("/getfirstmessage").done(function (data) {
-        const msgText = data;
-        appendMessage(BOT_NAME, BOT_IMG, "left", msgText);
-      });
-      $.get("/getuserdata").done(function (data) {
-        const userData = JSON.parse(data);
+      getchatbot();
+      $.get('/getuserdata').done(function (data) {
+        let userData = JSON.parse(data);
         $('.user-surname').text(userData.surname);
         $('.user-name').text(userData.name);
         $('.user-patronymic').text(userData.patronymic);
         $('.user-department').text(userData.department);
         $('.user-experience').text(userData.experience);
-        document.getElementsByClassName("user-avatar")[0].style.backgroundImage = userData.photo;
+        $('.user-avatar').css({ backgroundImage: userData.photo });
         $('.app-version').text(userData.version);
       });
     }
 
-    msgerForm.addEventListener("submit", event => {
-      event.preventDefault();
-      const msgText = msgerInput.value;
-      if (!msgText) return;
-      appendMessage(PERSON_NAME, PERSON_IMG, "right", msgText);
-      msgerInput.value = "";
-      botResponse(msgText);
-    });
-
-    window.onclick = function(event) {
-	  if (!event.target.matches('.icons')) {
-		let dropdowns = document.getElementsByClassName("dropdown-content");
-		for (let i = 0; i < dropdowns.length; i++)
-		  if (dropdowns[i].classList.contains('show'))
-			dropdowns[i].classList.remove('show');
-	  }
-	  if (!event.target.matches('.menu-icons') && !event.target.matches('.menu-element')) {
-		let menu = document.getElementsByClassName("menu-content");
-		for (let i = 0; i < menu.length; i++)
-		  if (menu[i].classList.contains('show-menu'))
-			menu[i].classList.remove('show-menu');
-	  }
-	}
-
-	function showDropdown() {
-	  document.getElementById("dropdown-list").classList.toggle("show");
-	}
-
-	function showMenu() {
-	  document.getElementById("menu-list").classList.toggle("show-menu");
-	}
-
-	function imgOnClick(img) {
-	  if (img.classList.contains("popup")){
-		img.classList.remove("popup");
-		img.getElementsByTagName("img")[0].classList.remove("full-img");
-	  }
-	  else {
-		img.classList.add("popup");
-		img.getElementsByTagName("img")[0].classList.add("full-img");
-	  }
-	}
-
-	function clearChat() {
-	  let elms = document.getElementsByClassName("msg");
-	  while (elms.length > 1)
-		  elms[1].remove();
-	}
-
-	function logout() {
-	  $.get("/logout").done(function () {
-	    location.reload();
-      })
-	}
-
-    function botResponse(rawText) {
-      $.get("/getresponse", { msg: rawText }).done(function (data) {
-        const msgText = data;
-        appendMessage(BOT_NAME, BOT_IMG, "left", msgText);
-      });
-    }
-
-    function cmdOnClick(msgText) {
-		appendMessage(PERSON_NAME, PERSON_IMG, "right", msgText, "");
-        botResponse(msgText);
-	}
-
-    function get(selector, root = document) {
-      return root.querySelector(selector);
-    }
-
-    function formatDate(date) {
-      const h = "0" + date.getHours();
-      const m = "0" + date.getMinutes();
-      return `${h.slice(-2)}:${m.slice(-2)}`;
-    }
-
-    function appendMessage(name, img, side, text) {
-      let personImg = img;
-      let personName = name;
-	  if (side == "right") {
-	  	if (!(String(document.getElementsByClassName("user-avatar")[0].style.backgroundImage).indexOf("nophoto") + 1)) {
-	  	  personImg = document.getElementsByClassName("user-avatar")[0].style.backgroundImage;
-		  personImg = personImg.slice(5, -1);
+    function chatbot() {
+      if(!$('.main').hasClass('msger-chat-form'))
+      	getchatbot();
 		}
-		personName = document.getElementsByClassName("user-name")[0].innerText;
-	  }
-      const msgHTML = `
-        <div class="msg ${side}-msg">
-          <div class="msg-img" style="background-image: url(${personImg})"></div>
 
-          <div class="msg-bubble">
-            <div class="msg-info">
-              <div class="msg-info-name">${personName}</div>
-              <div class="msg-info-time">${formatDate(new Date())}</div>
-            </div>
+    function getchatbot() {
+      let msgHTMLTemplate = '<main class="msger-chat" style="background-image:' +
+           'url(' + "{{ url_for('static', filename='images/background.png') }}" + ')"></main>' +
+           '<form class="msger-inputarea">' +
+           '<input type="text" class="msger-input" id="textInput" placeholder="Напиши свой вопрос..."' +
+           'autocomplete="off">' +
+           '<button type="submit" class="msger-send-btn">Отправить</button>' +
+           '</form>';
+      let $main = $('.main');
+			$main.html(msgHTMLTemplate);
+			$main.removeClass('msger-quests-form').addClass('msger-chat-form');
+			$('.msger-inputarea').bind('submit', function (event) {
+				event.preventDefault();
+				let $msgerInput = $('.msger-input');
+				let msgText = $msgerInput.val();
+				if (!msgText)
+					return;
+				appendMessage('right', msgText);
+				$msgerInput.val('');
+				botResponse(msgText);
+			});
+			$.get('/getfirstmessage').done(function (data) {
+				appendMessage('left', data);
+			});
+		}
 
-            <div class="msg-text">${text}</div>
-          </div>
-        </div>
-      `;
+		function quests() {
+			if(!$('.main').hasClass('msger-quests-form'))
+				getquests();
+		}
 
-      msgerChat.insertAdjacentHTML("beforeend", msgHTML);
-      msgerChat.scrollTop = msgerChat.scrollHeight;
-    }
+		function getquests() {
+			$.get('/getquests').done(function (data) {
+				let $main = $('.main');
+        $main.html(data);
+				$main.removeClass('msger-chat-form').addClass('msger-quests-form');
+			});
+		}
 
+		window.onclick = function(event) {
+			if (!event.target.matches('.menu-icons') && !event.target.matches('.menu-element'))
+				$('.menu-content').removeClass('show-menu');
+		}
+
+		function showMenu() {
+    	let $menuList = $('.menu-list');
+			$menuList.toggleClass('show-menu');
+			if ($menuList.hasClass('show-menu'))
+				$menuList.removeClass('hide-menu');
+			else
+				$menuList.addClass('hide-menu');
+		}
+
+		function cmdOnClick(data) {
+			appendMessage('right', data);
+			botResponse(data);
+		}
+
+		function imgOnClick(img) {
+    	let $img = $(img);
+    	$img.toggleClass('popup');
+    	$img.find('img').toggleClass('full-img');
+		}
+
+		function logout() {
+			$.get('/logout').done(function () {
+				location.reload();
+			})
+		}
+
+		function botResponse(rawText) {
+			$.get('/getresponse', { msg: rawText }).done(function (data) {
+				appendMessage('left', data);
+			});
+		}
+
+		function appendMessage(side, text) {
+    	let img, name;
+			if (side == 'right') {
+				img = $('.user-avatar').css('backgroundImage')
+				if (!img.indexOf('nophoto') + 1)
+					img = img.slice(5, -1);
+				name = $('.user-name').text();
+			}
+			else {
+				img = "{{ url_for('static', filename='images/logo.png') }}";
+				name = 'Атом';
+			}
+			let newDate = new Date();
+			let date = ('0' + newDate.getHours()).slice(-2) + ':' + ('0' + newDate.getMinutes()).slice(-2);
+			let msgHTMLTemplate = '<div class="msg %side-msg">' +
+							'<div class="msg-img" style="background-image: url(%img)"></div>' +
+							'<div class="msg-bubble">' +
+							'<div class="msg-info">' +
+							'<div class="msg-info-name">%name</div>' +
+							'<div class="msg-info-time">%date</div>' +
+							'</div>' +
+							'<div class="msg-text">%text</div>' +
+							'</div>' +
+							'</div>';
+			let msgHTML = msgHTMLTemplate.replace('%side', side).replace('%img', img).replace('%name', name).replace('%date', date).replace('%text', text);
+			let $msgerChat = $('.msger-chat');
+			$msgerChat.append(msgHTML);
+			$msgerChat.each(function() {
+				this.scrollTop = this.scrollHeight;
+			});
+		}
   </script>
-
 </body>
 
 </html>

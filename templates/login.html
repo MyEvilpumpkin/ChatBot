@@ -13,30 +13,26 @@
 
 <body onload="bodyonload()">
   <section class="login-page">
-	<header class="header-title">
+    <header class="header-title">
       <b>Росатом чатбот</b>
     </header>
-	  
-	<main class="login-main">
-		
-	<div class="login-info"><b>Для доступа к боту <br>необходимо залогиниться</b></div>
-	<div class="login-info login-error"></div>
-	
-	<form class="login-form" action="/login" method="post">
-      <input type="text" class="field input" name="login" placeholder="Логин" required><br>
-	  <input type="password" class="field input" name="password" placeholder="Пароль" required><br>
-      <button type="submit" class="button input">Войти</button>
-    </form>
-		
-	</main>
+    <main class="login-main">
+      <div class="login-info"><b>Для доступа к боту <br>необходимо залогиниться</b></div>
+      <div class="login-info login-error"></div>
+      <form class="login-form" action="/login" method="post">
+        <input type="text" class="field input" name="login" placeholder="Логин" required><br>
+        <input type="password" class="field input" name="password" placeholder="Пароль" required><br>
+        <button type="submit" class="button input">Войти</button>
+      </form>
+    </main>
   </section>
-
   <script>
     function bodyonload() {
       var result = window.location.search.match(new RegExp('em' + '=([^&=]+)'));
       if (result != null)
-           $('.login-error').text('Пользователь с таким сочетанием логин/пароль не существует');
+        $('.login-error').text('Пользователь с таким сочетанием логин/пароль не существует');
     }
   </script>
 </body>
+
 </html>

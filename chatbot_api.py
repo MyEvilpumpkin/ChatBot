@@ -56,14 +56,14 @@ def predict_class(sentence, model):
 def get_response(ints):
     connection = sqlite3.connect("ChatbotDB.db")
     cursor = connection.cursor()
-    cursor.execute("SELECT responses.response_text "
-                   "FROM responses INNER JOIN tags ON responses.tag_id = tags.tag_id "
-                   "AND tags.tag_name = \"%tag_name\"".replace("%tag_name", ints[0]['intent']))
+    cursor.execute("SELECT responses.text "
+                   "FROM responses INNER JOIN tags ON responses.tag_id = tags.id "
+                   "AND tags.name = \"%tag_name\"".replace("%tag_name", ints[0]['intent']))
     responses = cursor.fetchall()
 
-    cursor.execute("SELECT commands.command_name "
-                   "FROM commands INNER JOIN tags ON commands.tag_id = tags.tag_id "
-                   "AND tags.tag_name = \"%tag_name\"".replace("%tag_name", ints[0]['intent']))
+    cursor.execute("SELECT commands.name "
+                   "FROM commands INNER JOIN tags ON commands.tag_id = tags.id "
+                   "AND tags.name = \"%tag_name\"".replace("%tag_name", ints[0]['intent']))
     commands = cursor.fetchall()
 
     result = (random.choice(responses)[0], commands)
