@@ -22,32 +22,30 @@ def clean_up_sentence(sentence):
 
 # Функция возвращает массив, который является мешком слов: 0 или 1 для каждого слова в мешке, которое есть в предложении
 
-def bow(sentence, words, show_details=True):
+def bow(sentence, words):
     # Токенизируем паттерн
     sentence_words = clean_up_sentence(sentence)
     # Мешок слов - набор уникальных слов в предложении
     bag = [0] * len(words)
-    for s in sentence_words:
-        for i, w in enumerate(words):
-            if w == s:
+    for sentence_word in sentence_words:
+        for i, word in enumerate(words):
+            if word == sentence_word:
                 # Присвоить 1, если текущее слово есть в словаре
                 bag[i] = 1
-                if show_details:
-                    print("found in bag: %s" % w)
     return np.array(bag)
 
 
 def predict_class(sentence, model):
     # Отбрасываем прогнозы ниже порогового значения
-    p = bow(sentence, loaded_words, show_details=False)
-    res = model.predict(np.array([p]))[0]
+    prediction_data = bow(sentence, loaded_words)
+    prediction_result = model.predict(np.array([prediction_data]))[0]
     error_threshold = 0.9
-    results = [[i, r] for i, r in enumerate(res) if r > error_threshold]
+    results = [[i, result] for i, result in enumerate(prediction_result) if result > error_threshold]
     # Сортируем по вероятности
     results.sort(key=lambda x: x[1], reverse=True)
     return_list = []
-    for r in results:
-        return_list.append({"intent": loaded_classes[r[0]], "probability": str(r[1])})
+    for result in results:
+        return_list.append({"intent": loaded_classes[result[0]], "probability": str(result[1])})
     if not results:
         return_list.append({"intent": "noanswer", "probability": str(error_threshold)})
     return return_list
@@ -60,12 +58,10 @@ def get_response(ints):
                    "FROM responses INNER JOIN tags ON responses.tag_id = tags.id "
                    "AND tags.name = \"%tag_name\"".replace("%tag_name", ints[0]['intent']))
     responses = cursor.fetchall()
-
     cursor.execute("SELECT commands.name "
                    "FROM commands INNER JOIN tags ON commands.tag_id = tags.id "
                    "AND tags.name = \"%tag_name\"".replace("%tag_name", ints[0]['intent']))
     commands = cursor.fetchall()
-
     result = (random.choice(responses)[0], commands)
     return result
 
