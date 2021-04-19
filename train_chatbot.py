@@ -1,18 +1,20 @@
 import sqlite3
 import nltk
-from nltk.stem import WordNetLemmatizer
+from nltk.corpus import stopwords
+import pymorphy2
 import pickle
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
 from keras.optimizers import SGD
 import random
+import string
 
-lemmatizer = WordNetLemmatizer()
+morph = pymorphy2.MorphAnalyzer()
 words = []
 classes = []
 documents = []
-ignore_words = ['?', '!']
+ignore_words = stopwords.words("russian") + list(string.punctuation)
 
 # Коннектим БД
 connection = sqlite3.connect("ChatbotDB.db")
@@ -23,9 +25,9 @@ patterns = cursor.fetchall()
 
 # Токенизация - разбиение текста на слова
 for pattern in patterns:
-    w = nltk.word_tokenize(pattern[0])
-    words.extend(w)
-    documents.append((w, pattern[1]))
+    word = nltk.word_tokenize(pattern[0], language="russian")
+    words.extend(word)
+    documents.append((word, pattern[1]))
     if pattern[1] not in classes:
         classes.append(pattern[1])
 
@@ -33,7 +35,8 @@ for pattern in patterns:
 # Для существительных — именительный падеж, единственное число
 # Для прилагательных — именительный падеж, единственное число, мужской род
 # Для глаголов, причастий, деепричастий — глагол в инфинитиве несовершенного вида
-words = [lemmatizer.lemmatize(w.lower()) for w in words if w not in ignore_words]
+words = [morph.parse(word.lower())[0].normal_form for word in words
+         if not (word.lower() in ignore_words or word.isdigit())]
 words = sorted(list(set(words)))
 # Сортируем тэги по алфавиту
 classes = sorted(list(set(classes)))
@@ -57,7 +60,7 @@ for doc in documents:
     # Список токенизированных слов для каждого паттерна
     pattern_words = doc[0]
     # Лемматизируем каждое слово - приводим к начальной форме, пытаясь определить однокоренные слова
-    pattern_words = [lemmatizer.lemmatize(word.lower()) for word in pattern_words]
+    pattern_words = [morph.parse(word.lower())[0].normal_form for word in pattern_words]
     # Создаём мешок слов с единицей в конце списка, если найдено совпадение слова в текущем шаблоне
     for w in words:
         bag.append(1) if w in pattern_words else bag.append(0)

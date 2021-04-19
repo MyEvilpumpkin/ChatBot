@@ -1,12 +1,12 @@
 import sqlite3
 import nltk
-from nltk.stem import WordNetLemmatizer
+import pymorphy2
 import pickle
 import numpy as np
 from keras.models import load_model
 import random
 
-lemmatizer = WordNetLemmatizer()
+morph = pymorphy2.MorphAnalyzer()
 loaded_model = load_model('chatbot_model.h5')
 loaded_words = pickle.load(open('words.pkl', 'rb'))
 loaded_classes = pickle.load(open('classes.pkl', 'rb'))
@@ -14,9 +14,9 @@ loaded_classes = pickle.load(open('classes.pkl', 'rb'))
 
 def clean_up_sentence(sentence):
     # Токенизируем паттерны
-    sentence_words = nltk.word_tokenize(sentence)
+    sentence_words = nltk.word_tokenize(sentence, language="russian")
     # Приводим слова к начальной форме
-    sentence_words = [lemmatizer.lemmatize(word.lower()) for word in sentence_words]
+    sentence_words = [morph.parse(word.lower())[0].normal_form for word in sentence_words]
     return sentence_words
 
 
