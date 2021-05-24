@@ -60,23 +60,13 @@
     </div>
   </section>
   <script>
-	(function() {
-      if('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-                   .then(function(registration) {
-                   console.log('Service Worker Registered');
-                   return registration;
-          })
-          .catch(function(err) {
-            console.error('Unable to register service worker.', err);
-          });
-          navigator.serviceWorker.ready.then(function(registration) {
-            console.log('Service Worker Ready');
-          });
-        });
-      }
-    })();
+		(function() {
+			if('serviceWorker' in navigator) {
+				window.addEventListener('load', () => {
+					navigator.serviceWorker.register('/sw.js');
+				});
+			}
+		})();
 
     function bodyOnLoad() {
       getchatbot();
@@ -130,11 +120,36 @@
 
 		function getquests() {
 			$.get('/getquests').done(function (data) {
+				let questsTemplate = '<main class="msger-quests" style="background-image:' +
+					'url(' + "{{ url_for('static', filename='images/background.jpg') }}" + ')">%quests</main>';
+				let questTemplate = '<div class="quest" onClick="questOnClick(this)">' +
+					'<div className="quest-element quest-name">%name</div>' +
+					'<div class="quest-element quest-description">%description</div>' +
+					'<div class="quest-parts">%parts</div>' +
+					'</div>';
+				let questPartTemplate = '<div class="quest-part">' +
+					'<div class="quest-part-name">%name</div>' +
+					'<div class="quest-part-text">%text</div>' +
+					'</div>';
+				let questsString = '';
+				let questsData = JSON.parse(data);
+				questsData.quests.forEach(function(quest) {
+					let questPartsString = '';
+					quest.parts.forEach(function(part) {
+						questPartsString += questPartTemplate.replace('%name', part.name).replace('%text', part.text);
+					});
+					questsString += questTemplate.replace('%name', quest.name).replace('%description', quest.description).replace('%parts', questPartsString);
+				});
+				let questsHTML = questsTemplate.replace('%quests', questsString);
 				let $main = $('.main');
-        $main.html(data);
+        $main.html(questsHTML);
 				$main.removeClass('msger-chat-form').addClass('msger-quests-form');
 			});
 		}
+
+		function questOnClick(element) {
+      $(element).toggleClass('quest-full-view');
+    }
 
 		window.onclick = function(event) {
 			if (!event.target.matches('.menu-icons') && !event.target.matches('.menu-element'))
