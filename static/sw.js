@@ -4,7 +4,8 @@ const FILES_TO_CACHE = [
   '/static/offline-text.html',
   '/static/offline.html',
   '/static/styles/offline.css',
-  '/static/images/logo.png'
+  '/static/images/logo.png',
+  '/static/images/logo1.png'
 ];
 
 self.addEventListener('install', (event) => {

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Росатом чатбот</title>
-  <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
+  <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,6 +13,7 @@
   <meta name="msapplication-starturl" content="/">
   <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
   <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}">
+	<link rel="apple-touch-icon" href="{{ url_for('static', filename='images/logo1.png') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/chatbot.css') }}">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
@@ -66,6 +67,12 @@
 					navigator.serviceWorker.register('/sw.js');
 				});
 			}
+			let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+      window.addEventListener('resize', () => {
+				let vh = window.innerHeight * 0.01;
+				document.documentElement.style.setProperty('--vh', `${vh}px`);
+			});
 		})();
 
     function bodyOnLoad() {

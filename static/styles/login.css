@@ -21,8 +21,10 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   background-image: var(--body-bg);
   font-family: Helvetica, sans-serif;
+  overflow: hidden;
 }
 
 .login-page {
@@ -84,14 +86,14 @@ body {
 }
 
 .input {
-	text-align: center;
-	margin: 2px;
-	width: 100%;
-	padding: 10px;
-	border: none;
-    border-radius: 15px;
-	font-size: 1em;
-	background: #ddd;
+  text-align: center;
+  margin: 2px;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 15px;
+  font-size: 1em;
+  background: #ddd;
 }
 
 .button {
