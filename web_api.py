@@ -189,5 +189,10 @@ def get_quests():
     return result
 
 
+@app.route('/sw.js')
+def sw():
+    return app.send_static_file('sw.js'), 200, {'Content-Type': 'text/javascript'}
+
+
 if __name__ == "__main__":
     app.run()
