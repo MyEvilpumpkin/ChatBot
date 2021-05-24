@@ -12,7 +12,7 @@
   "icons": [
     {
       "src": "images/logo.png",
-      "sizes": "900x900",
+      "sizes": "144x144",
       "type": "image/png"
     }
   ]
