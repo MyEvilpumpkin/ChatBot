@@ -1,11 +1,9 @@
-import sqlite3
-
 from flask import render_template, request, redirect, url_for
 from flask_login import login_user, logout_user, login_required, current_user
 
 from chatbot_api import chatbot_response
 from models import Users, Jobs
-from __init__ import create_app
+from __init__ import create_app, db
 
 app = create_app()
 
@@ -106,9 +104,7 @@ def logout():
 @app.route('/getquests')
 @login_required
 def get_quests():
-    connection = sqlite3.connect("UsersDB.db")
-    cursor = connection.cursor()
-    query = cursor.execute("SELECT "
+    query = db.engine.execute("SELECT "
                            "Quests.id AS quest_id, "
                            "Quests.name AS quest_name, "
                            "Quests.description AS quest_description, "
@@ -158,7 +154,7 @@ def get_quests():
                            "ON (Quests.id = QuestPartWalkthrough.quest_id) "
                            "ORDER BY "
                            "Quests.id, "
-                           "QuestPartWalkthrough.id".replace("%user_id", str(current_user.id))).fetchall()
+                           "QuestPartWalkthrough.id".replace("%user_id", str(current_user.id)))
     result = "{\"quests\":["
     quest_id = -1
     res = ""
