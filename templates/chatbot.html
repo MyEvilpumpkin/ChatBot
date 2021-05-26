@@ -184,7 +184,7 @@
 		}
 
 		function logout() {
-			$.get('/logout').done(function () {
+			$.post('/logout').done(function () {
 				location.reload();
 			})
 		}

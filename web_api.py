@@ -94,7 +94,7 @@ def login_post():
     return redirect(url_for('home'))
 
 
-@app.route('/logout')
+@app.route('/logout', methods=['POST'])
 @login_required
 def logout():
     logout_user()
