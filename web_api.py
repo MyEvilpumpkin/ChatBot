@@ -96,7 +96,7 @@ def login_post():
 
 @app.route('/logout', methods=['POST'])
 @login_required
-def logout():
+def logout_post():
     logout_user()
     return redirect(url_for('login'))
 
