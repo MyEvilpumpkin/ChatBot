@@ -18,7 +18,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 
-<body onload="bodyOnLoad()">
+<body onload="getchatbot()">
   <section class="msger">
     <header class="msger-header">
       <div class="menu-icon">
@@ -34,13 +34,13 @@
 			<menu class="menu menu-element">
 				<div class="menu-list menu-content menu-element">
 					<div class="menu-list-item menu-content-top menu-element">
-						<div class="user-info user-avatar menu-element"></div>
+						<div class="user-info user-avatar menu-element" style="background-image: {{avatar}}"></div>
 						<div class="user-info user-fio menu-element">
-							<div class="user-info user-surname menu-element"></div>
-							<div class="user-info user-name menu-element"></div>
-							<div class="user-info user-patronymic menu-element"></div>
-							<div class="user-info user-department menu-element"></div>
-							<div class="user-info user-experience menu-element"></div>
+							<div class="user-info user-surname menu-element">{{surname}}</div>
+							<div class="user-info user-name menu-element">{{name}}</div>
+							<div class="user-info user-patronymic menu-element">{{patronymic}}</div>
+							<div class="user-info user-department menu-element">отдел {{department}}</div>
+							<div class="user-info user-experience menu-element">стаж с {{experience}}</div>
 						</div>
 					</div>
 					<div class="menu-list-item menu-content-middle menu-element">
@@ -53,7 +53,7 @@
 						</div>
 					</div>
 					<div class="menu-list-item menu-content-bottom menu-element">
-						<div class="app-version menu-element"></div>
+						<div class="app-version menu-element">{{version}}</div>
 					</div>
 				</div>
 			</menu>
@@ -63,31 +63,19 @@
   <script>
 		(function() {
 			if('serviceWorker' in navigator) {
-				window.addEventListener('load', () => {
+				$(window).on('load', () => {
 					navigator.serviceWorker.register('/sw.js');
 				});
 			}
-			let vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-      window.addEventListener('resize', () => {
-				let vh = window.innerHeight * 0.01;
-				document.documentElement.style.setProperty('--vh', `${vh}px`);
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+      $(window).on('resize', () => {
+				document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+			});
+      $(window).on('click', function(event) {
+				if (!event.target.matches('.menu-icons') && !event.target.matches('.menu-element'))
+					$('.menu-content').removeClass('show-menu');
 			});
 		})();
-
-    function bodyOnLoad() {
-      getchatbot();
-      $.get('/getuserdata').done(function (data) {
-        let userData = JSON.parse(data);
-        $('.user-surname').text(userData.surname);
-        $('.user-name').text(userData.name);
-        $('.user-patronymic').text(userData.patronymic);
-        $('.user-department').text(userData.department);
-        $('.user-experience').text(userData.experience);
-        $('.user-avatar').css({ backgroundImage: userData.photo });
-        $('.app-version').text(userData.version);
-      });
-    }
 
     function chatbot() {
       if(!$('.main').hasClass('msger-chat-form'))
@@ -158,11 +146,6 @@
       $(element).toggleClass('quest-full-view');
     }
 
-		window.onclick = function(event) {
-			if (!event.target.matches('.menu-icons') && !event.target.matches('.menu-element'))
-				$('.menu-content').removeClass('show-menu');
-		}
-
 		function showMenu() {
     	let $menuList = $('.menu-list');
 			$menuList.toggleClass('show-menu');
@@ -201,11 +184,11 @@
 				img = $('.user-avatar').css('backgroundImage')
 				if (!img.indexOf('nophoto') + 1)
 					img = img.slice(5, -1);
-				name = $('.user-name').text();
+				name = "{{name}}";
 			}
 			else {
 				img = "{{ url_for('static', filename='images/logo.png') }}";
-				name = 'Атом';
+				name = "{{bot_name}}";
 			}
 			let newDate = new Date();
 			let date = ('0' + newDate.getHours()).slice(-2) + ':' + ('0' + newDate.getMinutes()).slice(-2);
