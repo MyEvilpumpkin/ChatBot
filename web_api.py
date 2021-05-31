@@ -12,29 +12,29 @@ def reformat_response(data):
     text = str(data[0])
     index = 0
     while True:
-        start_index = text.find("<img", index)
+        start_index = text.find('<img', index)
         if start_index == -1:
             break
         else:
-            end_index = text.find(">", start_index)
+            end_index = text.find('>', start_index)
             if end_index != -1:
-                text = text.replace(text[start_index:end_index + 1], "<a onclick=\"imgOnClick(this)\">" +
-                                    text[start_index:end_index + 1] + "</a>", 1)
+                text = text.replace(text[start_index:end_index + 1], '<a onclick="imgOnClick(this)">' +
+                                    text[start_index:end_index + 1] + '</a>', 1)
                 index = end_index
-    text = text.replace("%salary", str(current_user.salary))
-    text = text.replace("%bot_name", "Атом")
-    if text.find("%jobs") != -1:
+    text = text.replace('%salary', str(current_user.salary))
+    text = text.replace('%bot_name', 'Атом')
+    if text.find('%jobs') != -1:
         jobs = Jobs.query.filter_by(user_id=current_user.id)
-        jobsstr = ""
+        jobsstr = ''
         for job in jobs:
-            jobsstr += "<li>" + job.text + "</li>"
-        text = text.replace("%jobs", jobsstr)
+            jobsstr += '<li>' + job.text + '</li>'
+        text = text.replace('%jobs', jobsstr)
 
     commands = data[1]
     if len(commands):
-        text += "</div><div class=\"msg-commands\">"
+        text += '</div><div class="msg-commands">'
         for command in commands:
-            text += "<div class=\"msg-command\" onClick=\"cmdOnClick(this.innerText)\">" + str(command[0]) + "</div>"
+            text += '<div class="msg-command" onClick="cmdOnClick(this.innerText)">' + str(command[0]) + '</div>'
     return text
 
 
@@ -95,84 +95,84 @@ def post_logout():
 @app.route('/get_quests')
 @login_required
 def get_quests():
-    query = db.engine.execute("SELECT "
-                           "Quests.id AS quest_id, "
-                           "Quests.name AS quest_name, "
-                           "Quests.description AS quest_description, "
-                           "QuestWalkthrough.status AS quest_status, "
-                           "QuestPartWalkthrough.id AS questPart_id, "
-                           "QuestPartWalkthrough.name AS questPart_name, "
-                           "QuestPartWalkthrough.text AS questPart_text, "
-                           "QuestPartWalkthrough.status AS questPart_status "
-                           "FROM "
-                           "Quests INNER JOIN (SELECT "
-                           "QuestPartWalkthrough.quest_id, "
-                           "MIN(QuestPartWalkthrough.status) AS status "
-                           "FROM "
-                           "(SELECT "
-                           "Quest_parts.quest_id, "
-                           "IFNULL(UserWalkthrough.status, 0) AS status "
-                           "FROM "
-                           "Quest_parts "
-                           "LEFT JOIN "
-                           "(SELECT "
-                           "Walkthrough.questpart_id, "
-                           "1 AS status "
-                           "FROM "
-                           "Walkthrough "
-                           "WHERE "
-                           "Walkthrough.user_id = %user_id) AS UserWalkthrough "
-                           "ON (Quest_parts.id = UserWalkthrough.questpart_id)) AS QuestPartWalkthrough "
-                           "GROUP BY QuestPartWalkthrough.quest_id) AS QuestWalkthrough "
-                           "ON (Quests.id = QuestWalkthrough.quest_id) "
-                           "INNER JOIN (SELECT "
-                           "Quest_parts.id, "
-                           "Quest_parts.name, "
-                           "Quest_parts.text, "
-                           "Quest_parts.quest_id, "
-                           "IFNULL(UserWalkthrough.status, 0) AS status "
-                           "FROM "
-                           "Quest_parts "
-                           "LEFT JOIN "
-                           "(SELECT "
-                           "Walkthrough.questpart_id, "
-                           "1 AS status "
-                           "FROM "
-                           "Walkthrough "
-                           "WHERE "
-                           "Walkthrough.user_id = %user_id) AS UserWalkthrough "
-                           "ON (Quest_parts.id = UserWalkthrough.questpart_id)) AS QuestPartWalkthrough "
-                           "ON (Quests.id = QuestPartWalkthrough.quest_id) "
-                           "ORDER BY "
-                           "Quests.id, "
-                           "QuestPartWalkthrough.id".replace("%user_id", str(current_user.id)))
-    result = "{\"quests\":["
+    query = db.engine.execute('SELECT '
+                           'Quests.id AS quest_id, '
+                           'Quests.name AS quest_name, '
+                           'Quests.description AS quest_description, '
+                           'QuestWalkthrough.status AS quest_status, '
+                           'QuestPartWalkthrough.id AS questPart_id, '
+                           'QuestPartWalkthrough.name AS questPart_name, '
+                           'QuestPartWalkthrough.text AS questPart_text, '
+                           'QuestPartWalkthrough.status AS questPart_status '
+                           'FROM '
+                           'Quests INNER JOIN (SELECT '
+                           'QuestPartWalkthrough.quest_id, '
+                           'MIN(QuestPartWalkthrough.status) AS status '
+                           'FROM '
+                           '(SELECT '
+                           'Quest_parts.quest_id, '
+                           'IFNULL(UserWalkthrough.status, 0) AS status '
+                           'FROM '
+                           'Quest_parts '
+                           'LEFT JOIN '
+                           '(SELECT '
+                           'Walkthrough.questpart_id, '
+                           '1 AS status '
+                           'FROM '
+                           'Walkthrough '
+                           'WHERE '
+                           'Walkthrough.user_id = %user_id) AS UserWalkthrough '
+                           'ON (Quest_parts.id = UserWalkthrough.questpart_id)) AS QuestPartWalkthrough '
+                           'GROUP BY QuestPartWalkthrough.quest_id) AS QuestWalkthrough '
+                           'ON (Quests.id = QuestWalkthrough.quest_id) '
+                           'INNER JOIN (SELECT '
+                           'Quest_parts.id, '
+                           'Quest_parts.name, '
+                           'Quest_parts.text, '
+                           'Quest_parts.quest_id, '
+                           'IFNULL(UserWalkthrough.status, 0) AS status '
+                           'FROM '
+                           'Quest_parts '
+                           'LEFT JOIN '
+                           '(SELECT '
+                           'Walkthrough.questpart_id, '
+                           '1 AS status '
+                           'FROM '
+                           'Walkthrough '
+                           'WHERE '
+                           'Walkthrough.user_id = %user_id) AS UserWalkthrough '
+                           'ON (Quest_parts.id = UserWalkthrough.questpart_id)) AS QuestPartWalkthrough '
+                           'ON (Quests.id = QuestPartWalkthrough.quest_id) '
+                           'ORDER BY '
+                           'Quests.id, '
+                           'QuestPartWalkthrough.id'.replace('%user_id', str(current_user.id)))
+    result = '{"quests":['
     quest_id = -1
-    res = ""
+    res = ''
     for row in query:
         if quest_id != row[0]:
             result += res
             if quest_id != -1:
-                res = "]},"
+                res = ']},'
             else:
-                res = ""
-            res += "{"
-            res += "\"id\":\"" + str(row[0]) + "\","
-            res += "\"name\":\"" + str(row[1]) + "\","
-            res += "\"description\":\"" + str(row[2]) + "\","
-            res += "\"status\":\"" + str(row[3]) + "\","
-            res += "\"parts\":[{"
+                res = ''
+            res += '{'
+            res += '"id":"' + str(row[0]) + '",'
+            res += '"name":"' + str(row[1]) + '",'
+            res += '"description":"' + str(row[2]) + '",'
+            res += '"status":"' + str(row[3]) + '",'
+            res += '"parts":[{'
             quest_id = row[0]
         else:
-            res += ",{"
-        res += "\"id\":\"" + str(row[4]) + "\","
-        res += "\"name\":\"" + str(row[5]) + "\","
-        res += "\"text\":\"" + str(row[6]) + "\","
-        res += "\"status\":\"" + str(row[7]) + "\""
-        res += "}"
+            res += ',{'
+        res += '"id":"' + str(row[4]) + '",'
+        res += '"name":"' + str(row[5]) + '",'
+        res += '"text":"' + str(row[6]) + '",'
+        res += '"status":"' + str(row[7]) + '"'
+        res += '}'
     result += res
-    result += "]}]}"
-    result = result.replace("\r", "").replace("\n", "").replace("\t", "")
+    result += ']}]}'
+    result = result.replace('\r', '').replace('\n', '').replace('\t', '')
     return result
 
 
