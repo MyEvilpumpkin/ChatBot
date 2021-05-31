@@ -103,9 +103,7 @@
 				$chatInput.val('');
 				getChatbotResponse(msgText);
 			});
-			$.get('/get_first_chatbot_message').done(function (data) {
-				appendMessage('left', data);
-			});
+			getChatbotResponse('Первое сообщение');
 		}
 
 		function quests() {
@@ -172,8 +170,8 @@
 			})
 		}
 
-		function getChatbotResponse(rawText) {
-			$.get('/get_chatbot_response', { msg: rawText }).done(function (data) {
+		function getChatbotResponse(msgText) {
+			$.get('/get_chatbot_response', { msg: msgText }).done(function (data) {
 				appendMessage('left', data);
 			});
 		}

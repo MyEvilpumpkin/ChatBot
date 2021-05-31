@@ -22,6 +22,7 @@ def reformat_response(data):
                                     text[start_index:end_index + 1] + "</a>", 1)
                 index = end_index
     text = text.replace("%salary", str(current_user.salary))
+    text = text.replace("%bot_name", "Атом")
     if text.find("%jobs") != -1:
         jobs = Jobs.query.filter_by(user_id=current_user.id)
         jobsstr = ""
@@ -61,15 +62,6 @@ def get_chatbot_response():
     user_text = request.args.get('msg')
     response = chatbot_response(user_text)
     return reformat_response(response)
-
-
-@app.route('/get_first_chatbot_message')
-@login_required
-def get_first_chatbot_message():
-    response = chatbot_response('Привет')
-    first_response = ('Привет, я - Атом, бот-помощник!<br>Я помогу тебе освоиться в нашей компании.<br>'
-                      'Что ты хочешь у меня спросить?', response[1])
-    return reformat_response(first_response)
 
 
 @app.route('/login')
