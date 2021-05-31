@@ -19,8 +19,8 @@
 </head>
 
 <body onload="getChatbot()">
-  <section class="msger">
-    <header class="msger-header">
+  <section class="main-page">
+    <header class="main-page-header">
       <div class="menu-icon">
 				<ul class="menu-icons" onclick="showMenu()">
 					<li></li>
@@ -28,9 +28,9 @@
 					<li></li>
 				</ul>
 			</div>
-      <div class="msger-header-title"><b>Росатом чатбот</b></div>
+      <div class="main-page-header-title"><b>Росатом чатбот</b></div>
     </header>
-    <div class="msger-body">
+    <div class="main-page-body">
 			<menu class="menu menu-element">
 				<div class="menu-list menu-content menu-element">
 					<div class="menu-list-item menu-content-top menu-element">
@@ -78,29 +78,29 @@
 		})();
 
     function chatbot() {
-      if(!$('.main').hasClass('msger-chat-form'))
+      if(!$('.main').hasClass('chat-form'))
       	getChatbot();
 		}
 
     function getChatbot() {
-      let msgHTMLTemplate = '<main class="msger-chat" style="background-image:' +
+      let msgHTMLTemplate = '<main class="chat" style="background-image:' +
            'url(' + "{{ url_for('static', filename='images/background.jpg') }}" + ')"></main>' +
-           '<form class="msger-inputarea">' +
-           '<input type="text" class="msger-input" id="textInput" placeholder="Напиши свой вопрос..."' +
+           '<form class="chat-inputarea">' +
+           '<input type="text" class="chat-input" id="textInput" placeholder="Напиши свой вопрос..."' +
            'autocomplete="off">' +
-           '<button type="submit" class="msger-send-btn">Отправить</button>' +
+           '<button type="submit" class="chat-send-btn">Отправить</button>' +
            '</form>';
       let $main = $('.main');
 			$main.html(msgHTMLTemplate);
-			$main.removeClass('msger-quests-form').addClass('msger-chat-form');
-			$('.msger-inputarea').bind('submit', function (event) {
+			$main.removeClass('quests-form').addClass('chat-form');
+			$('.chat-inputarea').bind('submit', function (event) {
 				event.preventDefault();
-				let $msgerInput = $('.msger-input');
-				let msgText = $msgerInput.val();
+				let $chatInput = $('.chat-input');
+				let msgText = $chatInput.val();
 				if (!msgText)
 					return;
 				appendMessage('right', msgText);
-				$msgerInput.val('');
+				$chatInput.val('');
 				getChatbotResponse(msgText);
 			});
 			$.get('/get_first_chatbot_message').done(function (data) {
@@ -109,13 +109,13 @@
 		}
 
 		function quests() {
-			if(!$('.main').hasClass('msger-quests-form'))
+			if(!$('.main').hasClass('quests-form'))
 				getQuests();
 		}
 
 		function getQuests() {
 			$.get('/get_quests').done(function (data) {
-				let questsTemplate = '<main class="msger-quests" style="background-image:' +
+				let questsTemplate = '<main class="quests" style="background-image:' +
 					'url(' + "{{ url_for('static', filename='images/background.jpg') }}" + ')">%quests</main>';
 				let questTemplate = '<div class="quest" onClick="questOnClick(this)">' +
 					'<div className="quest-element quest-name">%name</div>' +
@@ -138,7 +138,7 @@
 				let questsHTML = questsTemplate.replace('%quests', questsString);
 				let $main = $('.main');
         $main.html(questsHTML);
-				$main.removeClass('msger-chat-form').addClass('msger-quests-form');
+				$main.removeClass('chat-form').addClass('quests-form');
 			});
 		}
 
@@ -203,9 +203,9 @@
 							'</div>' +
 							'</div>';
 			let msgHTML = msgHTMLTemplate.replace('%side', side).replace('%img', img).replace('%name', name).replace('%date', date).replace('%text', text);
-			let $msgerChat = $('.msger-chat');
-			$msgerChat.append(msgHTML);
-			$msgerChat.each(function() {
+			let $chat = $('.chat');
+			$chat.append(msgHTML);
+			$chat.each(function() {
 				this.scrollTop = this.scrollHeight;
 			});
 		}
