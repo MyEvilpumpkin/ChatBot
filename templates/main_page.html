@@ -112,7 +112,7 @@
 		}
 
 		function getQuests() {
-			$.get('/get_quests').done(function (data) {
+			$.get('/quests_and_walkthroughs').done(function (data) {
 				let questsTemplate = '<main class="quests" style="background-image:' +
 					'url(' + "{{ url_for('static', filename='images/background.jpg') }}" + ')">%quests</main>';
 				let questTemplate = '<div class="quest" onClick="questOnClick(this)">' +
@@ -165,13 +165,17 @@
 		}
 
 		function logout() {
-			$.post('/logout').done(function () {
-				location.reload();
-			})
+    	$.ajax({
+				url: '/session',
+				type: 'DELETE',
+				success: function() {
+					location.reload();
+				}
+			});
 		}
 
 		function getChatbotResponse(msgText) {
-			$.get('/get_chatbot_response', { msg: msgText }).done(function (data) {
+			$.get('/chatbot_response', { msg: msgText }).done(function (data) {
 				appendMessage('left', data);
 			});
 		}

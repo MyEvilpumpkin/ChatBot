@@ -38,9 +38,9 @@ def reformat_response(data):
     return text
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 @login_required
-def get_main_page():
+def main():
     if current_user.photo is None:
         photo = url_for('static', filename='images/nophoto.jpg')
     else:
@@ -56,45 +56,42 @@ def get_main_page():
                            bot_name='Атом')
 
 
-@app.route('/get_chatbot_response')
+@app.route('/chatbot_response', methods=['GET'])
 @login_required
-def get_chatbot_response():
+def chatbot_response_web():
     user_text = request.args.get('msg')
     response = chatbot_response(user_text)
     return reformat_response(response)
 
 
-@app.route('/login')
-def get_login_page():
+@app.route('/login', methods=['GET'])
+def login():
     if current_user.is_authenticated:
-        return redirect(url_for('get_main_page'))
+        return redirect(url_for('main'))
     return render_template('login_page.html',
                            error=''
                            if request.args.get('em') is None
                            else 'Пользователь с таким сочетанием логин/пароль не существует')
 
 
-@app.route('/login', methods=['POST'])
-def post_login():
-    user_login = request.form.get('login')
-    user_password = request.form.get('password')
-    user = Users.query.filter_by(login=user_login, password=user_password).first()
-    if not user:
-        return redirect(url_for('get_login_page', em=True))
-    login_user(user, remember=True)
-    return redirect(url_for('get_main_page'))
+@app.route('/session', methods=['POST', 'DELETE'])
+def session():
+    if request.method == 'POST':
+        user_login = request.form.get('login')
+        user_password = request.form.get('password')
+        user = Users.query.filter_by(login=user_login, password=user_password).first()
+        if not user:
+            return redirect(url_for('login', em=True), code=303)
+        login_user(user, remember=True)
+        return redirect(url_for('main'), code=303)
+    elif request.method == 'DELETE':
+        logout_user()
+        return redirect(url_for('login'), code=303)
 
 
-@app.route('/logout', methods=['POST'])
+@app.route('/quests_and_walkthroughs', methods=['GET'])
 @login_required
-def post_logout():
-    logout_user()
-    return redirect(url_for('get_login_page'))
-
-
-@app.route('/get_quests')
-@login_required
-def get_quests():
+def quests_and_walkthroughs():
     query = db.engine.execute('SELECT '
                            'Quests.id AS quest_id, '
                            'Quests.name AS quest_name, '
@@ -176,8 +173,8 @@ def get_quests():
     return result
 
 
-@app.route('/service_worker.js')
-def get_service_worker():
+@app.route('/service_worker.js', methods=['GET'])
+def service_worker():
     return app.send_static_file('service_worker.js'), 200, {'Content-Type': 'text/javascript'}
 
 
