@@ -18,14 +18,14 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 
-<body onload="bodyonload()">
+<body>
   <section class="login-page">
     <header class="header-title">
       <b>Росатом чатбот</b>
     </header>
     <main class="login-main">
       <div class="login-info"><b>Для доступа к боту <br>необходимо залогиниться</b></div>
-      <div class="login-info login-error"></div>
+      <div class="login-info login-error">{{error}}</div>
       <form class="login-form" action="/login" method="post">
         <input type="text" class="field input" name="login" placeholder="Логин" required><br>
         <input type="password" class="field input" name="password" placeholder="Пароль" required><br>
@@ -36,23 +36,15 @@
   <script>
     (function() {
 			if('serviceWorker' in navigator) {
-				window.addEventListener('load', () => {
+				$(window).on('load', () => {
 					navigator.serviceWorker.register('/sw.js');
 				});
 			}
-			let vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-      window.addEventListener('resize', () => {
-				let vh = window.innerHeight * 0.01;
-				document.documentElement.style.setProperty('--vh', `${vh}px`);
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+      $(window).on('resize', () => {
+				document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
 			});
 		})();
-
-    function bodyonload() {
-      var result = window.location.search.match(new RegExp('em' + '=([^&=]+)'));
-      if (result != null)
-        $('.login-error').text('Пользователь с таким сочетанием логин/пароль не существует');
-    }
   </script>
 </body>
 
