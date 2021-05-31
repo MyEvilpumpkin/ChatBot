@@ -14,7 +14,7 @@
   <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
   <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}">
   <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/logo1.png') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/login.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/login_page.css') }}">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 
@@ -37,7 +37,7 @@
     (function() {
 			if('serviceWorker' in navigator) {
 				$(window).on('load', () => {
-					navigator.serviceWorker.register('/sw.js');
+					navigator.serviceWorker.register('/service_worker.js');
 				});
 			}
       document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);

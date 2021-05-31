@@ -14,11 +14,11 @@
   <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
   <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}">
 	<link rel="apple-touch-icon" href="{{ url_for('static', filename='images/logo1.png') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/chatbot.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/main_page.css') }}">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 
-<body onload="getchatbot()">
+<body onload="getChatbot()">
   <section class="msger">
     <header class="msger-header">
       <div class="menu-icon">
@@ -64,7 +64,7 @@
 		(function() {
 			if('serviceWorker' in navigator) {
 				$(window).on('load', () => {
-					navigator.serviceWorker.register('/sw.js');
+					navigator.serviceWorker.register('/service_worker.js');
 				});
 			}
       document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
@@ -79,10 +79,10 @@
 
     function chatbot() {
       if(!$('.main').hasClass('msger-chat-form'))
-      	getchatbot();
+      	getChatbot();
 		}
 
-    function getchatbot() {
+    function getChatbot() {
       let msgHTMLTemplate = '<main class="msger-chat" style="background-image:' +
            'url(' + "{{ url_for('static', filename='images/background.jpg') }}" + ')"></main>' +
            '<form class="msger-inputarea">' +
@@ -101,20 +101,20 @@
 					return;
 				appendMessage('right', msgText);
 				$msgerInput.val('');
-				botResponse(msgText);
+				getChatbotResponse(msgText);
 			});
-			$.get('/getfirstmessage').done(function (data) {
+			$.get('/get_first_chatbot_message').done(function (data) {
 				appendMessage('left', data);
 			});
 		}
 
 		function quests() {
 			if(!$('.main').hasClass('msger-quests-form'))
-				getquests();
+				getQuests();
 		}
 
-		function getquests() {
-			$.get('/getquests').done(function (data) {
+		function getQuests() {
+			$.get('/get_quests').done(function (data) {
 				let questsTemplate = '<main class="msger-quests" style="background-image:' +
 					'url(' + "{{ url_for('static', filename='images/background.jpg') }}" + ')">%quests</main>';
 				let questTemplate = '<div class="quest" onClick="questOnClick(this)">' +
@@ -157,7 +157,7 @@
 
 		function cmdOnClick(data) {
 			appendMessage('right', data);
-			botResponse(data);
+			getChatbotResponse(data);
 		}
 
 		function imgOnClick(img) {
@@ -172,8 +172,8 @@
 			})
 		}
 
-		function botResponse(rawText) {
-			$.get('/getresponse', { msg: rawText }).done(function (data) {
+		function getChatbotResponse(rawText) {
+			$.get('/get_chatbot_response', { msg: rawText }).done(function (data) {
 				appendMessage('left', data);
 			});
 		}

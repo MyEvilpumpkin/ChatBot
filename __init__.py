@@ -13,7 +13,7 @@ def create_app():
     db.init_app(app)
 
     login_manager = LoginManager()
-    login_manager.login_view = 'login'
+    login_manager.login_view = 'get_login_page'
     login_manager.init_app(app)
 
     from models import Users

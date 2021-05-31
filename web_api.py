@@ -39,12 +39,12 @@ def reformat_response(data):
 
 @app.route('/')
 @login_required
-def main_page():
+def get_main_page():
     if current_user.photo is None:
         photo = url_for('static', filename='images/nophoto.jpg')
     else:
         photo = current_user.photo
-    return render_template('chatbot.html',
+    return render_template('main_page.html',
                            avatar=str(photo),
                            surname=str(current_user.surname),
                            name=str(current_user.name),
@@ -55,17 +55,17 @@ def main_page():
                            bot_name='Атом')
 
 
-@app.route('/getresponse')
+@app.route('/get_chatbot_response')
 @login_required
-def get_bot_response():
+def get_chatbot_response():
     user_text = request.args.get('msg')
     response = chatbot_response(user_text)
     return reformat_response(response)
 
 
-@app.route('/getfirstmessage')
+@app.route('/get_first_chatbot_message')
 @login_required
-def get_first_bot_message():
+def get_first_chatbot_message():
     response = chatbot_response('Привет')
     first_response = ('Привет, я - Атом, бот-помощник!<br>Я помогу тебе освоиться в нашей компании.<br>'
                       'Что ты хочешь у меня спросить?', response[1])
@@ -73,34 +73,34 @@ def get_first_bot_message():
 
 
 @app.route('/login')
-def login_page():
+def get_login_page():
     if current_user.is_authenticated:
-        return redirect(url_for('main_page'))
-    return render_template('login.html',
+        return redirect(url_for('get_main_page'))
+    return render_template('login_page.html',
                            error=''
                            if request.args.get('em') is None
                            else 'Пользователь с таким сочетанием логин/пароль не существует')
 
 
 @app.route('/login', methods=['POST'])
-def login():
+def post_login():
     user_login = request.form.get('login')
     user_password = request.form.get('password')
     user = Users.query.filter_by(login=user_login, password=user_password).first()
     if not user:
-        return redirect(url_for('login_page', em=True))
+        return redirect(url_for('get_login_page', em=True))
     login_user(user, remember=True)
-    return redirect(url_for('main_page'))
+    return redirect(url_for('get_main_page'))
 
 
 @app.route('/logout', methods=['POST'])
 @login_required
-def logout():
+def post_logout():
     logout_user()
-    return redirect(url_for('login_page'))
+    return redirect(url_for('get_login_page'))
 
 
-@app.route('/getquests')
+@app.route('/get_quests')
 @login_required
 def get_quests():
     query = db.engine.execute("SELECT "
@@ -184,9 +184,9 @@ def get_quests():
     return result
 
 
-@app.route('/sw.js')
-def sw():
-    return app.send_static_file('sw.js'), 200, {'Content-Type': 'text/javascript'}
+@app.route('/service_worker.js')
+def get_service_worker():
+    return app.send_static_file('service_worker.js'), 200, {'Content-Type': 'text/javascript'}
 
 
 if __name__ == '__main__':
