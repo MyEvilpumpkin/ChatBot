@@ -30,14 +30,13 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  if (event.request.method === 'GET')
-    event.respondWith(fetch(event.request).catch(() => {
-      return caches.open(CACHE_NAME).then((cache) => {
-          if (event.request.headers.get('accept').indexOf('text/html') !== -1)
-            return cache.match('/static/offline_page.html');
-          else
-            return cache.match('/static/offline_text.html');
-      });
-    }));
+  event.respondWith(fetch(event.request).catch(() => {
+    return caches.open(CACHE_NAME).then((cache) => {
+      if ((event.request.method !== 'GET') || (event.request.headers.get('accept').indexOf('text/html') !== -1))
+        return cache.match('/static/offline_page.html');
+      else
+        return cache.match('/static/offline_text.html');
+    });
+  }));
 });
 
