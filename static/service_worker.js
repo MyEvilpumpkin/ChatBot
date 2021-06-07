@@ -3,7 +3,6 @@ const CACHE_NAME = 'static-cache';
 const FILES_TO_CACHE = [
   '/static/offline_text.html',
   '/static/offline_page.html',
-  '/static/styles/offline_page.css',
   '/static/images/logo.png',
   '/static/images/logo1.png'
 ];
