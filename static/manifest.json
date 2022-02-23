@@ -1,0 +1,19 @@
+{
+  "name": "Росатом чатбот",
+  "short_name": "Росатом чатбот",
+  "lang": "ru-RU",
+  "description": "Росатом чатбот",
+  "theme_color": "white",
+  "background_color": "white",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "images/logo.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }
+  ]
+}

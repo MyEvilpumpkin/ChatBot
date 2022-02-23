@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Росатом чатбот</title>
+  <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Росатом чатбот">
+  <meta name="apple-mobile-web-app-title" content="Росатом чатбот">
+  <meta name="msapplication-starturl" content="/">
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+  <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}">
+	<link rel="apple-touch-icon" href="{{ url_for('static', filename='images/logo1.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/main_page.css') }}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body onload="getChatbot()">
+  <section class="main-page">
+    <header class="main-page-header">
+      <div class="menu-icon">
+				<ul class="menu-icons" onclick="showMenu()">
+					<li></li>
+					<li></li>
+					<li></li>
+				</ul>
+			</div>
+      <div class="main-page-header-title"><b>Росатом чатбот</b></div>
+    </header>
+    <div class="main-page-body">
+			<menu class="menu menu-element">
+				<div class="menu-list menu-content menu-element">
+					<div class="menu-list-item menu-content-top menu-element">
+						<div class="user-info user-avatar menu-element" style="background-image: url({{avatar}})"></div>
+						<div class="user-info user-fio menu-element">
+							<div class="user-info user-surname menu-element">{{surname}}</div>
+							<div class="user-info user-name menu-element">{{name}}</div>
+							<div class="user-info user-patronymic menu-element">{{patronymic}}</div>
+							<div class="user-info user-department menu-element">отдел {{department}}</div>
+							<div class="user-info user-experience menu-element">стаж с {{experience}}</div>
+						</div>
+					</div>
+					<div class="menu-list-item menu-content-middle menu-element">
+						<div class="menu-content-middle-top menu-element">
+							<a onclick="chatbot()">Чатбот</a>
+<!--							<a onclick="quests()">Квесты</a>-->
+						</div>
+						<div class="menu-content-middle-bottom menu-element">
+							<a onclick="logout()">Выйти</a>
+						</div>
+					</div>
+					<div class="menu-list-item menu-content-bottom menu-element">
+						<div class="app-version menu-element">{{version}}</div>
+					</div>
+				</div>
+			</menu>
+			<div class="main"></div>
+    </div>
+  </section>
+  <script>
+		(function() {
+			if('serviceWorker' in navigator) {
+				$(window).on('load', () => {
+					navigator.serviceWorker.register('/service_worker.js');
+				});
+			}
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+      $(window).on('resize', () => {
+				document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+			});
+      $(window).on('click', function(event) {
+				if (!event.target.matches('.menu-icons') && !event.target.matches('.menu-element'))
+					$('.menu-content').removeClass('show-menu');
+			});
+		})();
+
+    function chatbot() {
+      if(!$('.main').hasClass('chat-form'))
+      	getChatbot();
+		}
+
+    function getChatbot() {
+      let msgHTMLTemplate = '<main class="chat" style="background-image:' +
+           'url(' + "{{ url_for('static', filename='images/background.jpg') }}" + ')"></main>' +
+           '<form class="chat-inputarea">' +
+           '<input type="text" class="chat-input" id="textInput" placeholder="Напиши свой вопрос..."' +
+           'autocomplete="off">' +
+           '<button type="submit" class="chat-send-btn">Отправить</button>' +
+           '</form>';
+      let $main = $('.main');
+			$main.html(msgHTMLTemplate);
+			$main.removeClass('quests-form').addClass('chat-form');
+			$('.chat-inputarea').bind('submit', function (event) {
+				event.preventDefault();
+				let $chatInput = $('.chat-input');
+				let msgText = $chatInput.val();
+				if (!msgText)
+					return;
+				appendMessage('right', msgText);
+				$chatInput.val('');
+				getChatbotResponse(msgText);
+			});
+			getChatbotResponse('Первое сообщение');
+		}
+
+		function quests() {
+			if(!$('.main').hasClass('quests-form'))
+				getQuests();
+		}
+
+		function getQuests() {
+			$.get('/quests_and_walkthroughs').done(function (data) {
+				let questsTemplate = '<main class="quests" style="background-image:' +
+					'url(' + "{{ url_for('static', filename='images/background.jpg') }}" + ')">%quests</main>';
+				let questTemplate = '<div class="quest" onClick="questOnClick(this)">' +
+					'<div className="quest-element quest-name">%name</div>' +
+					'<div class="quest-element quest-description">%description</div>' +
+					'<div class="quest-parts">%parts</div>' +
+					'</div>';
+				let questPartTemplate = '<div class="quest-part">' +
+					'<div class="quest-part-name">%name</div>' +
+					'<div class="quest-part-text">%text</div>' +
+					'</div>';
+				let questsString = '';
+				let questsData = JSON.parse(data);
+				questsData.quests.forEach(function(quest) {
+					let questPartsString = '';
+					quest.parts.forEach(function(part) {
+						questPartsString += questPartTemplate.replace('%name', part.name).replace('%text', part.text);
+					});
+					questsString += questTemplate.replace('%name', quest.name).replace('%description', quest.description).replace('%parts', questPartsString);
+				});
+				let questsHTML = questsTemplate.replace('%quests', questsString);
+				let $main = $('.main');
+        $main.html(questsHTML);
+				$main.removeClass('chat-form').addClass('quests-form');
+			});
+		}
+
+		function questOnClick(element) {
+      $(element).toggleClass('quest-full-view');
+    }
+
+		function showMenu() {
+    	let $menuList = $('.menu-list');
+			$menuList.toggleClass('show-menu');
+			if ($menuList.hasClass('show-menu'))
+				$menuList.removeClass('hide-menu');
+			else
+				$menuList.addClass('hide-menu');
+		}
+
+		function cmdOnClick(data) {
+			appendMessage('right', data);
+			getChatbotResponse(data);
+		}
+
+		function imgOnClick(img) {
+    	let $img = $(img);
+    	$img.toggleClass('popup');
+    	$img.find('img').toggleClass('full-img');
+		}
+
+		function logout() {
+    	$.ajax({
+				url: '/session',
+				type: 'DELETE',
+				success: function() {
+					location.reload();
+				}
+			});
+		}
+
+		function getChatbotResponse(msgText) {
+			$.get('/chatbot_response', { msg: msgText }).done(function (data) {
+				appendMessage('left', data);
+			});
+		}
+
+		function appendMessage(side, text) {
+    	let img, name;
+			if (side == 'right') {
+				img = $('.user-avatar').css('backgroundImage')
+				if (!img.indexOf('nophoto') + 1)
+					img = img.slice(5, -1);
+				name = "{{name}}";
+			}
+			else {
+				img = "{{ url_for('static', filename='images/logo.png') }}";
+				name = "{{bot_name}}";
+			}
+			let newDate = new Date();
+			let date = ('0' + newDate.getHours()).slice(-2) + ':' + ('0' + newDate.getMinutes()).slice(-2);
+			let msgHTMLTemplate = '<div class="msg %side-msg">' +
+							'<div class="msg-img" style="background-image: url(%img)"></div>' +
+							'<div class="msg-bubble">' +
+							'<div class="msg-info">' +
+							'<div class="msg-info-name">%name</div>' +
+							'<div class="msg-info-time">%date</div>' +
+							'</div>' +
+							'<div class="msg-text">%text</div>' +
+							'</div>' +
+							'</div>';
+			let msgHTML = msgHTMLTemplate.replace('%side', side).replace('%img', img).replace('%name', name).replace('%date', date).replace('%text', text);
+			let $chat = $('.chat');
+			$chat.append(msgHTML);
+			$chat.each(function() {
+				this.scrollTop = this.scrollHeight;
+			});
+		}
+  </script>
+</body>
+
+</html>

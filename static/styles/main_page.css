@@ -1,6 +1,6 @@
 :root {
   --body-bg: linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%);
-  --msger-bg: #fff;
+  --bg: #fff;
   --border: 2px solid #ddd;
   --left-msg-bg: #ececec;
   --right-msg-bg: linear-gradient(180deg, rgb(160, 200, 240) 0%, rgb(50, 110, 180) 100%) fixed;
@@ -25,13 +25,15 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   background-image: var(--body-bg);
   font-family: Helvetica, sans-serif;
+  overflow: hidden;
 }
 
-.msger {
+.main-page {
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: column;
   justify-content: space-between;
   width: 100%;
   max-width: 867px;
@@ -39,11 +41,11 @@ body {
   height: 100%;
   border: var(--border);
   border-radius: 5px;
-  background: var(--msger-bg);
+  background: var(--bg);
   box-shadow: 0 15px 15px -5px rgba(0, 0, 0, 0.2);
 }
 
-.msger-header {
+.main-page-header {
   display: flex;
   font-size: large;
   justify-content: space-between;
@@ -55,42 +57,42 @@ body {
 }
 
 @media all and (max-width: 576px) {
-  .msger-header {
+  .main-page-header {
     font-size: medium;
   	padding: 5px;
   }
 }
 
-.msger-header-title {
+.main-page-header-title {
   width: 100%;
   margin-right: 30px;
 }
 
-.msger-header-title b {
+.main-page-header-title b {
   color: rgb(50, 110, 180);
   cursor: pointer;
 }
 
-.msger-header-title b:hover {
+.main-page-header-title b:hover {
   color: rgb(30, 70, 140);
 }
 
-.msger-body {
-	display: flex;
-	justify-content: space-between;
-	flex-direction: row;
-	overflow-y: auto;
-	flex: 1;
+.main-page-body {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  overflow-y: auto;
+  flex: 1;
 }
 
-.msger-chat-form {
-	width: 100%;
-	display: flex;
-  flex-flow: column wrap;
+.chat-form {
+  width: 100%;
+  display: flex;
+  flex-flow: column;
   justify-content: space-between;
 }
 
-.msger-chat {
+.chat {
   flex: 1;
   overflow-y: auto;
   padding: 10px;
@@ -98,15 +100,15 @@ body {
   background-size: auto 100%;
 }
 
-.msger-chat::-webkit-scrollbar {
+.chat::-webkit-scrollbar {
   width: 6px;
 }
 
-.msger-chat::-webkit-scrollbar-track {
+.chat::-webkit-scrollbar-track {
   background: #ddd;
 }
 
-.msger-chat::-webkit-scrollbar-thumb {
+.chat::-webkit-scrollbar-thumb {
   background: #bdbdbd;
 }
 
@@ -146,9 +148,9 @@ body {
 
 @media all and (max-width: 576px) {
   .msg-bubble {
-	  max-width: 280px;
+    max-width: 280px;
     font-size: 0.85em;
-	  padding: 10px;
+    padding: 10px;
   }
 }
 
@@ -193,7 +195,7 @@ body {
 
 @media all and (max-width: 576px) {
   .msg-text img:not(.full-img) {
-	  max-width: 260px;
+    max-width: 260px;
   }
 }
 
@@ -234,7 +236,7 @@ body {
   margin-top: 10px;
 }
 
-.msger-inputarea {
+.chat-inputarea {
   display: flex;
   padding: 10px;
   border-top: var(--border);
@@ -242,12 +244,12 @@ body {
 }
 
 @media all and (max-width: 576px) {
-  .msger-inputarea {
+  .chat-inputarea {
     padding: 5px;
   }
 }
 
-.msger-inputarea * {
+.chat-inputarea * {
   padding: 10px;
   border: none;
   border-radius: 5px;
@@ -255,18 +257,18 @@ body {
 }
 
 @media all and (max-width: 576px) {
-  .msger-inputarea * {
+  .chat-inputarea * {
     padding: 5px;
     font-size: 0.85em;
   }
 }
 
-.msger-input {
+.chat-input {
   flex: 1;
   background: #ddd;
 }
 
-.msger-send-btn {
+.chat-send-btn {
   margin-left: 10px;
   background: rgb(50, 110, 180);
   color: #fff;
@@ -276,12 +278,12 @@ body {
 }
 
 @media all and (max-width: 576px) {
-  .msger-send-btn {
+  .chat-send-btn {
     margin-left: 5px;
   }
 }
 
-.msger-send-btn:hover {
+.chat-send-btn:hover {
   background: rgb(30, 70, 140);
 }
 
@@ -452,3 +454,71 @@ body {
   99% { -webkit-transform: translateX(-100%); -webkit-opacity: 100%;}
   100% { -webkit-transform: translateX(-100%); -webkit-opacity: 0%;}
 }
+
+.quests-form {
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+}
+
+.quests {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  align-items: center;
+  background-size: auto 100%;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.quest {
+  width: 100%;
+  border: var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  margin-top: 10px;
+  background: var(--left-msg-bg);
+  cursor: pointer;
+}
+
+.quest:not(.quest-full-view) {
+  width: 320px;
+}
+
+.quest-element:not(:first-child){
+  margin-top: 10px;
+}
+
+.quest-name {
+  font-weight: bold;
+}
+
+.quest:not(.quest-full-view) .quest-description {
+  display: none;
+}
+
+.quest:not(.quest-full-view) .quest-parts {
+  display: none;
+}
+
+.quest-parts {
+  margin-top: 10px;
+}
+
+.quest-part {
+  margin-top: 5px;
+  border: var(--border);
+  border-radius: 10px;
+  padding: 5px;
+  text-align: center;
+  background: var(--left-cmd-bg);
+}
+
+.quest-part-text{
+  display: none;
+}
+

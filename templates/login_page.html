@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Росатом чатбот</title>
+  <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Росатом чатбот">
+  <meta name="apple-mobile-web-app-title" content="Росатом чатбот">
+  <meta name="msapplication-starturl" content="/">
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+  <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/logo1.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/login_page.css') }}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <section class="login-page">
+    <header class="header-title">
+      <b>Росатом чатбот</b>
+    </header>
+    <main class="login-main">
+      <div class="login-info"><b>Для доступа к боту <br>необходимо залогиниться</b></div>
+      <div class="login-info login-error">{{error}}</div>
+      <form class="login-form" action="/session" method="post">
+        <input type="text" class="field input" name="login" placeholder="Логин" required><br>
+        <input type="password" class="field input" name="password" placeholder="Пароль" required><br>
+        <button type="submit" class="button input">Войти</button>
+      </form>
+    </main>
+  </section>
+  <script>
+    (function() {
+			if('serviceWorker' in navigator) {
+				$(window).on('load', () => {
+					navigator.serviceWorker.register('/service_worker.js');
+				});
+			}
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+      $(window).on('resize', () => {
+				document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+			});
+		})();
+  </script>
+</body>
+
+</html>
